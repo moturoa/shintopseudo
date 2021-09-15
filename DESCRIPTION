@@ -1,0 +1,12 @@
+Package: shintopseudo
+Type: Package
+Title: Read, validate, and anonymize data
+Version: 0.1
+Author: Remko Duursma
+Maintainer: Remko Duursma <remko@shintolabs.nl>
+Description: New implementation of 'pseudomaker' scripts for Ede
+Depends: dplyr, glue, futile.logger
+License: GPL-2
+Encoding: UTF-8
+LazyData: false
+RoxygenNote: 7.1.1
