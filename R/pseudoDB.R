@@ -197,8 +197,8 @@ pseudoDB <- R6::R6Class(
     
     close = function(){
       
-      self$log("------------- end pseudoDB -------------", name = "pseudomaker")
       self$close_sqlite()
+      self$log("------------- end pseudoDB -------------")
       
     },
     
