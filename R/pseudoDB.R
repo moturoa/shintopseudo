@@ -78,6 +78,15 @@ pseudoDB <- R6::R6Class(
       
     },
     
+    write_datalog = function(){
+      
+      today_ <- format(Sys.Date(), "%Y%m%d")
+      fn <- file.path(self$project$logdir, 
+                      paste0(today_, "_shintopseudo.csv"))
+      write.csv2(self$datalog, fn, row.names = FALSE)
+      
+    },
+    
     
     log = function(msg, how = c("info","fatal","warn")){
       
@@ -197,6 +206,7 @@ pseudoDB <- R6::R6Class(
     
     close = function(){
       
+      self$write_datalog()
       self$close_sqlite()
       self$log("------------- end pseudoDB -------------")
       

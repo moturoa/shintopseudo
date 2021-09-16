@@ -14,6 +14,7 @@ Pseudo-database class
 \item \href{#method-new}{\code{pseudoDB$new()}}
 \item \href{#method-create_directories}{\code{pseudoDB$create_directories()}}
 \item \href{#method-open_logfile}{\code{pseudoDB$open_logfile()}}
+\item \href{#method-write_datalog}{\code{pseudoDB$write_datalog()}}
 \item \href{#method-log}{\code{pseudoDB$log()}}
 \item \href{#method-set_data_log}{\code{pseudoDB$set_data_log()}}
 \item \href{#method-set_status}{\code{pseudoDB$set_status()}}
@@ -64,6 +65,15 @@ Pseudo-database class
 \subsection{Method \code{open_logfile()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{pseudoDB$open_logfile()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-write_datalog"></a>}}
+\if{latex}{\out{\hypertarget{method-write_datalog}{}}}
+\subsection{Method \code{write_datalog()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$write_datalog()}\if{html}{\out{</div>}}
 }
 
 }
