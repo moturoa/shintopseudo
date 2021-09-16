@@ -23,6 +23,7 @@ Pseudo-database class
 \item \href{#method-open_sqlite}{\code{pseudoDB$open_sqlite()}}
 \item \href{#method-vacuum_sqlite}{\code{pseudoDB$vacuum_sqlite()}}
 \item \href{#method-close_sqlite}{\code{pseudoDB$close_sqlite()}}
+\item \href{#method-close}{\code{pseudoDB$close()}}
 \item \href{#method-read_data}{\code{pseudoDB$read_data()}}
 \item \href{#method-read_data_fread}{\code{pseudoDB$read_data_fread()}}
 \item \href{#method-write_data}{\code{pseudoDB$write_data()}}
@@ -144,6 +145,15 @@ Pseudo-database class
 \subsection{Method \code{close_sqlite()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{pseudoDB$close_sqlite(vacuum = TRUE)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-close"></a>}}
+\if{latex}{\out{\hypertarget{method-close}{}}}
+\subsection{Method \code{close()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$close()}\if{html}{\out{</div>}}
 }
 
 }

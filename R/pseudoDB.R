@@ -10,6 +10,7 @@
 #' @importFrom DBI dbReadTable dbWriteTable dbListTables
 #' @importFrom RSQLite SQLite
 #' @importFrom futile.logger flog.appender appender.tee
+#' @importFrom lubridate year
 pseudoDB <- R6::R6Class(
   public = list(
     
@@ -192,6 +193,13 @@ pseudoDB <- R6::R6Class(
       }
       DBI::dbDisconnect(self$con)
       self$log("Database connection terminated.")
+    },
+    
+    close = function(){
+      
+      self$log("------------- end pseudoDB -------------", name = "pseudomaker")
+      self$close_sqlite()
+      
     },
     
     
@@ -514,7 +522,7 @@ pseudoDB <- R6::R6Class(
         if(all(is.na(dts))){
           data[[column[i]]] <- substr(data[[column[i]]], 1, 4)
         } else {
-          data[[column[i]]] <- as.character(year(dts))  
+          data[[column[i]]] <- as.character(lubridate::year(dts))  
         }
         
       }
