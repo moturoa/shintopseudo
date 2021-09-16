@@ -12,12 +12,30 @@ Pseudo-database class
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{pseudoDB$new()}}
+\item \href{#method-create_directories}{\code{pseudoDB$create_directories()}}
+\item \href{#method-open_logfile}{\code{pseudoDB$open_logfile()}}
+\item \href{#method-log}{\code{pseudoDB$log()}}
+\item \href{#method-set_data_log}{\code{pseudoDB$set_data_log()}}
+\item \href{#method-set_status}{\code{pseudoDB$set_status()}}
+\item \href{#method-set_error}{\code{pseudoDB$set_error()}}
 \item \href{#method-read_config}{\code{pseudoDB$read_config()}}
 \item \href{#method-check_files_exist}{\code{pseudoDB$check_files_exist()}}
 \item \href{#method-open_sqlite}{\code{pseudoDB$open_sqlite()}}
-\item \href{#method-log}{\code{pseudoDB$log()}}
+\item \href{#method-vacuum_sqlite}{\code{pseudoDB$vacuum_sqlite()}}
+\item \href{#method-close_sqlite}{\code{pseudoDB$close_sqlite()}}
 \item \href{#method-read_data}{\code{pseudoDB$read_data()}}
 \item \href{#method-read_data_fread}{\code{pseudoDB$read_data_fread()}}
+\item \href{#method-write_data}{\code{pseudoDB$write_data()}}
+\item \href{#method-encrypt}{\code{pseudoDB$encrypt()}}
+\item \href{#method-decrypt}{\code{pseudoDB$decrypt()}}
+\item \href{#method-anonymize_column}{\code{pseudoDB$anonymize_column()}}
+\item \href{#method-anonymize_columns}{\code{pseudoDB$anonymize_columns()}}
+\item \href{#method-process_files}{\code{pseudoDB$process_files()}}
+\item \href{#method-date_to_year}{\code{pseudoDB$date_to_year()}}
+\item \href{#method-to_age_bracket}{\code{pseudoDB$to_age_bracket()}}
+\item \href{#method-keep_columns}{\code{pseudoDB$keep_columns()}}
+\item \href{#method-delete_columns}{\code{pseudoDB$delete_columns()}}
+\item \href{#method-existing_columns}{\code{pseudoDB$existing_columns()}}
 \item \href{#method-clone}{\code{pseudoDB$clone()}}
 }
 }
@@ -26,7 +44,61 @@ Pseudo-database class
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$new(config_file)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$new(config_file, secret, log_to = c("file", "stdout"))}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-create_directories"></a>}}
+\if{latex}{\out{\hypertarget{method-create_directories}{}}}
+\subsection{Method \code{create_directories()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$create_directories()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-open_logfile"></a>}}
+\if{latex}{\out{\hypertarget{method-open_logfile}{}}}
+\subsection{Method \code{open_logfile()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$open_logfile()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-log"></a>}}
+\if{latex}{\out{\hypertarget{method-log}{}}}
+\subsection{Method \code{log()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$log(msg, how = c("info", "fatal", "warn"))}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-set_data_log"></a>}}
+\if{latex}{\out{\hypertarget{method-set_data_log}{}}}
+\subsection{Method \code{set_data_log()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$set_data_log(file, what, value)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-set_status"></a>}}
+\if{latex}{\out{\hypertarget{method-set_status}{}}}
+\subsection{Method \code{set_status()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$set_status(file, status)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-set_error"></a>}}
+\if{latex}{\out{\hypertarget{method-set_error}{}}}
+\subsection{Method \code{set_error()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$set_error(file, error)}\if{html}{\out{</div>}}
 }
 
 }
@@ -58,11 +130,20 @@ Pseudo-database class
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-log"></a>}}
-\if{latex}{\out{\hypertarget{method-log}{}}}
-\subsection{Method \code{log()}}{
+\if{html}{\out{<a id="method-vacuum_sqlite"></a>}}
+\if{latex}{\out{\hypertarget{method-vacuum_sqlite}{}}}
+\subsection{Method \code{vacuum_sqlite()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$log(what)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$vacuum_sqlite()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-close_sqlite"></a>}}
+\if{latex}{\out{\hypertarget{method-close_sqlite}{}}}
+\subsection{Method \code{close_sqlite()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$close_sqlite(vacuum = TRUE)}\if{html}{\out{</div>}}
 }
 
 }
@@ -87,7 +168,127 @@ Pseudo-database class
 \if{latex}{\out{\hypertarget{method-read_data_fread}{}}}
 \subsection{Method \code{read_data_fread()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$read_data_fread(fn, quote, sep, fill, skip, encoding)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$read_data_fread(fn, quote, sep, fill, skip = 0, encoding = NULL)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-write_data"></a>}}
+\if{latex}{\out{\hypertarget{method-write_data}{}}}
+\subsection{Method \code{write_data()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$write_data(data, fn)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-encrypt"></a>}}
+\if{latex}{\out{\hypertarget{method-encrypt}{}}}
+\subsection{Method \code{encrypt()}}{
+Symmetrically encrypt a vector using the secret
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$encrypt(x)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{x}}{A character vector}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-decrypt"></a>}}
+\if{latex}{\out{\hypertarget{method-decrypt}{}}}
+\subsection{Method \code{decrypt()}}{
+Symmetrically decrypt an encrypted vector using the secret
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$decrypt(x)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{x}}{A character vector}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-anonymize_column"></a>}}
+\if{latex}{\out{\hypertarget{method-anonymize_column}{}}}
+\subsection{Method \code{anonymize_column()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$anonymize_column(
+  data,
+  column,
+  db_key = NULL,
+  store_key_columns = NULL
+)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-anonymize_columns"></a>}}
+\if{latex}{\out{\hypertarget{method-anonymize_columns}{}}}
+\subsection{Method \code{anonymize_columns()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$anonymize_columns(data, columns, db_keys, ...)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-process_files"></a>}}
+\if{latex}{\out{\hypertarget{method-process_files}{}}}
+\subsection{Method \code{process_files()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$process_files(files = NULL)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-date_to_year"></a>}}
+\if{latex}{\out{\hypertarget{method-date_to_year}{}}}
+\subsection{Method \code{date_to_year()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$date_to_year(data, column)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-to_age_bracket"></a>}}
+\if{latex}{\out{\hypertarget{method-to_age_bracket}{}}}
+\subsection{Method \code{to_age_bracket()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$to_age_bracket(data, columns)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-keep_columns"></a>}}
+\if{latex}{\out{\hypertarget{method-keep_columns}{}}}
+\subsection{Method \code{keep_columns()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$keep_columns(data, columns)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-delete_columns"></a>}}
+\if{latex}{\out{\hypertarget{method-delete_columns}{}}}
+\subsection{Method \code{delete_columns()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$delete_columns(data, columns)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-existing_columns"></a>}}
+\if{latex}{\out{\hypertarget{method-existing_columns}{}}}
+\subsection{Method \code{existing_columns()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$existing_columns(x, data)}\if{html}{\out{</div>}}
 }
 
 }
