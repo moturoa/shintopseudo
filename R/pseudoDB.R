@@ -50,7 +50,7 @@ pseudoDB <- R6::R6Class(
         path_out = self$project$outputdir,
         status = character(1),
         error_code = "",
-        timestamp_done = character(1),
+        timestamp = character(1),
         md5_in = private$checksum(file.path(self$project$inputdir, self$files)),
         md5_out = character(1),
         n_lines_file = integer(1),
@@ -81,9 +81,18 @@ pseudoDB <- R6::R6Class(
     write_datalog = function(){
       
       today_ <- format(Sys.Date(), "%Y%m%d")
-      fn <- file.path(self$project$logdir, 
+      path <- file.path(self$project$outputdir, 
                       paste0(today_, "_shintopseudo.csv"))
-      write.csv2(self$datalog, fn, row.names = FALSE)
+      write.csv2(self$datalog, path, row.names = FALSE)
+      
+      # tijdelijk voor backwards compatibility
+      m <- dplyr::select(self$datalog, 
+                         filename = file,
+                         md5 = md5_out,
+                         timestamp = timestamp)
+      m_path <- file.path(self$project$outputdir, "pseudomaker.info")
+      write.csv2(m, m_path, row.names = FALSE)
+                         
       
     },
     
@@ -112,7 +121,8 @@ pseudoDB <- R6::R6Class(
     
     set_error = function(file, error){
       self$set_status(file, "FAIL")
-      self$set_data_log(file, "error_code", erorr)
+      self$set_data_log(file, "timestamp", as.character(Sys.time()))
+      self$set_data_log(file, "error_code", error)
     },
     
     read_config = function(fn){
@@ -482,9 +492,6 @@ pseudoDB <- R6::R6Class(
       
       return(data)
     },
-    
-    
-
 
     process_files = function(files = NULL){
 
@@ -517,7 +524,7 @@ pseudoDB <- R6::R6Class(
         self$write_data(out, fn)
         chk <- private$checksum(file.path(self$project$outputdir, fn))
         self$set_data_log(fn, "md5_out", chk)
-        self$set_data_log(fn, "timestamp_done", as.character(Sys.time()))
+        self$set_data_log(fn, "timestamp", as.character(Sys.time()))
         self$set_status(fn, "OK")
         
         
