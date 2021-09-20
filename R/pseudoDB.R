@@ -59,11 +59,15 @@ pseudoDB <- R6::R6Class(
         md5_out = character(1),
         n_lines_file = integer(1),
         n_rows_read = integer(1),
-        n_cols_read = integer(1)
+        n_cols_read = integer(1),
+        encrypted_columns = private$encrypted_columns()
         
       )
       
     },
+    
+
+    
     
     create_directories = function(){
       dir.create(self$project$outputdir, showWarnings = FALSE)
@@ -618,6 +622,12 @@ pseudoDB <- R6::R6Class(
       list(n_lines = private$count_lines(fn),
            n_rows = nrow(data))
       
+    },
+    
+    encrypted_columns = function(){
+      # 4 sapplys in een rij, record?
+      unname(sapply(sapply(sapply(sapply(self$config, "[[", "config"), "[[", "encrypt"),names),
+                    jsonlite::toJSON))
     }
     
     
