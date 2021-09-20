@@ -61,7 +61,6 @@ pseudoDB <- R6::R6Class(
         n_rows_read = integer(1),
         n_cols_read = integer(1),
         encrypted_columns = private$encrypted_columns()
-        
       )
       
     },
@@ -626,8 +625,7 @@ pseudoDB <- R6::R6Class(
     
     encrypted_columns = function(){
       # 4 sapplys in een rij, record?
-      unname(sapply(sapply(sapply(sapply(self$config, "[[", "config"), "[[", "encrypt"),names),
-                    jsonlite::toJSON))
+      unname(sapply(sapply(lapply(self$config, "[[", "config"), "[[", "encrypt"), jsonlite::toJSON))
     }
     
     
