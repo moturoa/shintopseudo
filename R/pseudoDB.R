@@ -11,6 +11,7 @@
 #' @importFrom RSQLite SQLite
 #' @importFrom futile.logger flog.appender appender.tee
 #' @importFrom lubridate year
+#' @importFrom uuid UUIDgenerate
 pseudoDB <- R6::R6Class(
   public = list(
     
@@ -45,6 +46,9 @@ pseudoDB <- R6::R6Class(
       self$con <- self$open_sqlite()
       
       self$datalog <- tibble::tibble(
+        id = uuid::UUIDgenerate(),
+        projectname = self$project$projectname,
+        timestamp_start = paste(Sys.time()),
         file = self$files,
         path_in = self$project$inputdir,
         path_out = self$project$outputdir,
@@ -80,19 +84,10 @@ pseudoDB <- R6::R6Class(
     
     write_datalog = function(){
       
-      today_ <- format(Sys.Date(), "%Y%m%d")
       path <- file.path(self$project$outputdir, 
-                      paste0(today_, "_shintopseudo.csv"))
+                        "shintopseudo.csv")
+                     
       write.csv2(self$datalog, path, row.names = FALSE)
-      
-      # tijdelijk voor backwards compatibility
-      m <- dplyr::select(self$datalog, 
-                         filename = file,
-                         md5 = md5_out,
-                         timestamp = timestamp)
-      m_path <- file.path(self$project$outputdir, "pseudomaker.info")
-      write.csv2(m, m_path, row.names = FALSE)
-                         
       
     },
     
