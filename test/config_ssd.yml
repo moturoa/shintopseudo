@@ -1,4 +1,5 @@
 project:
+  projectname: "Suite"
   inputdir:  "c:/repos/ede/DATA/dd-input/ssd"
   outputdir: "c:/repos/ede/DATA/test-output/ssd"
   database:  "c:/repos/ede/DATA/test-output/dd-sqlite-data"

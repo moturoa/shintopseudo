@@ -159,7 +159,6 @@ pseudoDB <- R6::R6Class(
       if(!all(ex)){
         nonex <- fns[!ex]
         self$log("Some files not found: {paste(nonex, collapse = ', ')}", "warn")
-        
       }
     },
     
