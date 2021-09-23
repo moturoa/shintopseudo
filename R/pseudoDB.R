@@ -421,7 +421,6 @@ pseudoDB <- R6::R6Class(
         }  
       }
       
-      
       # 'key_store' wordt alleen voor IZM gebruikt.
       # store_key_columns: alleen aanpassen op basis van 1e entry.
       if(!is.null(store_key_columns) && column == store_key_columns[1]){
@@ -453,7 +452,6 @@ pseudoDB <- R6::R6Class(
         
         dbWriteTable(self$con, "keystore", key_store, overwrite = TRUE)
       }
-      
       
       # Append value/hash to DB (only those rows not previously stored).
       if(nrow(key_db_new) > 0){
@@ -516,7 +514,7 @@ pseudoDB <- R6::R6Class(
           next
         }
         
-        if(!all(names(cfg$encrypt)) %in% names(out)){
+        if(!all(names(cfg$encrypt) %in% names(out))){
           self$set_error(fn, "Column(s) not found in data")
           next
         }
