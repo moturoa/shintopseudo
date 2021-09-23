@@ -244,7 +244,8 @@ Symmetrically decrypt an encrypted vector using the secret
   data,
   column,
   db_key = NULL,
-  store_key_columns = NULL
+  store_key_columns = NULL,
+  file = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -254,7 +255,7 @@ Symmetrically decrypt an encrypted vector using the secret
 \if{latex}{\out{\hypertarget{method-anonymize_columns}{}}}
 \subsection{Method \code{anonymize_columns()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$anonymize_columns(data, columns, db_keys, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$anonymize_columns(data, columns, db_keys, file, ...)}\if{html}{\out{</div>}}
 }
 
 }

@@ -349,14 +349,15 @@ pseudoDB <- R6::R6Class(
     
     
     anonymize_column = function(data, column, db_key = NULL,
-                                store_key_columns = NULL){
+                                store_key_columns = NULL,
+                                file = NULL){
       
       st <- proc.time()[3]
       
       if(!column %in% names(data)){
         self$log("Column {column} not found in data - exiting.", "fatal")
         self$log("Available columns: {paste(names(data), collapse = ', ')}", "fatal")
-        stop("Column not found - check log file.")
+        self$set_error(file, "Column(s) not found")
       }
       
       # db_key is for looking up encrypted value/hash pairs from the db.
@@ -481,10 +482,10 @@ pseudoDB <- R6::R6Class(
     },
     
     
-    anonymize_columns = function(data, columns, db_keys, ...){
+    anonymize_columns = function(data, columns, db_keys, file, ...){
       
       for(i in seq_along(columns)){
-        data <- self$anonymize_column(data, columns[i], db_key = db_keys[i], ...)
+        data <- self$anonymize_column(data, columns[i], db_key = db_keys[i], file=file, ...)
       }
       
       return(data)
@@ -505,19 +506,24 @@ pseudoDB <- R6::R6Class(
         out <- self$read_data(fn) 
         if(is.null(out)){
           self$log("Error reading {fn} - skipping to next file.")
+          self$set_error(fn, "File could not be read")
+          next
+        }
+        
+        if(nrow(out) < 3){
+          self$set_error(fn, "File is (nearly) empty")
           next
         }
         
         out <- out %>%
           self$anonymize_columns(columns = names(cfg$encrypt),
-                            db_keys = unlist(cfg$encrypt)) %>%
+                            db_keys = unlist(cfg$encrypt),
+                            file = fn) %>%
           self$delete_columns(cfg$remove) %>%
           self$keep_columns(cfg$keep) %>%
           self$date_to_year(cfg$date_to_year) %>%
           self$to_age_bracket(cfg$to_age_bracket)
 
-        # pm_log
-        
         self$write_data(out, fn)
         chk <- private$checksum(file.path(self$project$outputdir, fn))
         self$set_data_log(fn, "md5_out", chk)
