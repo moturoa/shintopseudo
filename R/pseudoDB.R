@@ -358,6 +358,7 @@ pseudoDB <- R6::R6Class(
         self$log("Column {column} not found in data - exiting.", "fatal")
         self$log("Available columns: {paste(names(data), collapse = ', ')}", "fatal")
         self$set_error(file, "Column(s) not found")
+        return(NULL)
       }
       
       # db_key is for looking up encrypted value/hash pairs from the db.
@@ -512,6 +513,11 @@ pseudoDB <- R6::R6Class(
         
         if(nrow(out) < 3){
           self$set_error(fn, "File is (nearly) empty")
+          next
+        }
+        
+        if(!all(names(cfg$encrypt)) %in% names(out)){
+          self$set_error(fn, "Column(s) not found in data")
           next
         }
         
