@@ -354,12 +354,12 @@ pseudoDB <- R6::R6Class(
       
       st <- proc.time()[3]
       
-      if(!column %in% names(data)){
-        self$log("Column {column} not found in data - exiting.", "fatal")
-        self$log("Available columns: {paste(names(data), collapse = ', ')}", "fatal")
-        self$set_error(file, "Column(s) not found")
-        return(NULL)
-      }
+      # if(!column %in% names(data)){
+      #   self$log("Column {column} not found in data - exiting.", "fatal")
+      #   self$log("Available columns: {paste(names(data), collapse = ', ')}", "fatal")
+      #   self$set_error(file, "Column(s) not found")
+      #   return(NULL)
+      # }
       
       # db_key is for looking up encrypted value/hash pairs from the db.
       # if not provided, use column name itself.
@@ -515,6 +515,11 @@ pseudoDB <- R6::R6Class(
         }
         
         if(!all(names(cfg$encrypt) %in% names(out))){
+          
+          nm_mis <- setdiff(names(out), names(cfg$encrypt))
+          
+          self$log("Columns not found: {paste(nm_mis, collapse=',')}.", "fatal")
+          self$log("Available columns: {paste(names(out), collapse = ',')}", "fatal")
           self$set_error(fn, "Column(s) not found in data")
           next
         }
