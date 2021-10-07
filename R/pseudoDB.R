@@ -60,7 +60,7 @@ pseudoDB <- R6::R6Class(
         n_lines_file = integer(1),
         n_rows_read = integer(1),
         n_cols_read = integer(1),
-        encrypted_columns = private$encrypted_columns()
+        encrypted_columns = self$encrypted_columns()
       )
       
     },
@@ -138,10 +138,6 @@ pseudoDB <- R6::R6Class(
       
       if(is.null(out$project$clean)){
         out$project$clean <- FALSE
-      }
-      
-      if(is.null(out$project$saverds)){
-        out$project$saverds <- FALSE
       }
       
       if(is.null(out$project$databasename)){
@@ -601,6 +597,10 @@ pseudoDB <- R6::R6Class(
         return(intersect(x, nm))
       }
       
+    },
+    
+    encrypted_columns = function(){
+        unname(sapply(lapply(lapply(self$config, "[[", "config"), "[[", "encrypt"), jsonlite::toJSON))  
     }
     
   ),
@@ -635,11 +635,6 @@ pseudoDB <- R6::R6Class(
       list(n_lines = private$count_lines(fn),
            n_rows = nrow(data))
       
-    },
-    
-    encrypted_columns = function(){
-      # 4 sapplys in een rij, record?
-      unname(sapply(sapply(lapply(self$config, "[[", "config"), "[[", "encrypt"), jsonlite::toJSON))
     }
     
     

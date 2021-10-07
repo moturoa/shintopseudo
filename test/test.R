@@ -12,7 +12,7 @@ library(safer)
 library(readr)
 
 cfg_path  <- "test/config_ssd.yml"
-
+cfg_path  <- "test/config_instadr.yml"
 
 
 devtools::load_all()

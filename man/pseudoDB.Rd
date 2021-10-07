@@ -38,6 +38,7 @@ Pseudo-database class
 \item \href{#method-keep_columns}{\code{pseudoDB$keep_columns()}}
 \item \href{#method-delete_columns}{\code{pseudoDB$delete_columns()}}
 \item \href{#method-existing_columns}{\code{pseudoDB$existing_columns()}}
+\item \href{#method-encrypted_columns}{\code{pseudoDB$encrypted_columns()}}
 \item \href{#method-clone}{\code{pseudoDB$clone()}}
 }
 }
@@ -310,6 +311,15 @@ Symmetrically decrypt an encrypted vector using the secret
 \subsection{Method \code{existing_columns()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{pseudoDB$existing_columns(x, data)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-encrypted_columns"></a>}}
+\if{latex}{\out{\hypertarget{method-encrypted_columns}{}}}
+\subsection{Method \code{encrypted_columns()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$encrypted_columns()}\if{html}{\out{</div>}}
 }
 
 }
