@@ -229,13 +229,19 @@ pseudoDB <- R6::R6Class(
         return(NULL)
       }
       
+      if(is.null(cfg$skip_lines)){
+        skip <- "__auto__"
+      } else {
+        skip <- as.numeric(cfg$skip_lines)
+      }
+      
       #TODO meerdere methodes
       tm <- system.time({
         out <- self$read_data_fread(fn_path, 
                                     quote = "\"",
                                     sep = cfg$`csv-separator`, 
                                     fill = TRUE,
-                                    skip = "__auto__",
+                                    skip = skip,
                                     encoding = cfg$encoding)  
       })
       
