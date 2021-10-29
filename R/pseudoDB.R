@@ -65,9 +65,6 @@ pseudoDB <- R6::R6Class(
       
     },
     
-
-    
-    
     create_directories = function(){
       dir.create(self$project$outputdir, showWarnings = FALSE)
       dir.create(self$project$database, showWarnings = FALSE)
@@ -235,15 +232,28 @@ pseudoDB <- R6::R6Class(
         skip <- as.numeric(cfg$skip_lines)
       }
       
-      #TODO meerdere methodes
-      tm <- system.time({
-        out <- self$read_data_fread(fn_path, 
-                                    quote = "\"",
-                                    sep = cfg$`csv-separator`, 
-                                    fill = TRUE,
-                                    skip = skip,
-                                    encoding = cfg$encoding)  
-      })
+      if(is.null(cfg$readfunction)){
+        tm <- system.time({
+          out <- self$read_data_fread(fn_path, 
+                                      quote = "\"",
+                                      sep = cfg$`csv-separator`, 
+                                      fill = TRUE,
+                                      skip = skip,
+                                      encoding = cfg$encoding)  
+        })  
+      } else {
+        
+        if(!exists(cfg$readfunction)){
+          self$set_error(fn, paste("readfunction",cfg$readfunction,"not found."))
+          return(NULL)
+        } else {
+          read_fun <- base::get(cfg$readfunction)
+          tm <- system.time(
+            out <- read_fun(fn_path)
+          )
+        }
+        
+      }
       
       if(inherits(out, "try-error")){
         self$set_error(fn, paste0("Error reading raw data: '",as.character(out),"'"))
