@@ -79,6 +79,7 @@ pseudoDB <- R6::R6Class(
       
       futile.logger::flog.appender(futile.logger::appender.tee(fn), name = "pseudomaker")
       self$log("------------- start pseudoDB v. {packageVersion('shintopseudo')} -------------")
+      self$log("-------------  -------------")
       
     },
     
