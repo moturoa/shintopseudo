@@ -1,9 +1,9 @@
 project:
   projectname: "Suite"
-  inputdir:  "c:/repos/ede/DATA/dd-input/ssd"
-  outputdir: "c:/repos/ede/DATA/test-output/ssd"
-  database:  "c:/repos/ede/DATA/test-output/dd-sqlite-data"
-  logdir:    "c:/repos/ede/DATA/test-logs/ssd"
+  inputdir:  "c:/repos/ede/DATA/datadienst/dd-input/ssd"
+  outputdir: "c:/repos/ede/DATA/datadienst/test-output/ssd"
+  database:  "c:/repos/ede/DATA/datadienst/test-output/dd-sqlite-data"
+  logdir:    "c:/repos/ede/DATA/datadienst/test-logs/ssd"
 config:
   "TBL_CLIENT_UNION_UITVRAAG.CSV":   
     encoding: ""

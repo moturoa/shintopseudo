@@ -11,9 +11,9 @@ library(lubridate)
 library(safer)
 library(readr)
 
-cfg_path  <- "test/config_ssd.yml"
-cfg_path  <- "test/config_instadr.yml"
-cfg_path  <- "test/config_izm.yml"
+#cfg_path  <- "test/config_ssd.yml"
+ cfg_path  <- "test/config_instadr.yml"
+# cfg_path  <- "test/config_izm.yml"
 
 devtools::load_all()
 
@@ -48,4 +48,8 @@ data3 <- .pdb$anonymize_columns(data1,
 
 .pdb$close_sqlite()
 
+
+
+d <- read.csv2("c:/repos/ede/DATA/datadienst/test-output/institutionele_adressen/adressen_lijst.csv")
+x <- .pdb$decrypt(d$PC)
 

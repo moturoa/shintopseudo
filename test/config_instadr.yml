@@ -1,9 +1,9 @@
 project:
   projectname: "Inst. adressen"
-  inputdir:  "c:/repos/ede/DATA/dd-input/institutionele_adressen"
-  outputdir: "c:/repos/ede/DATA/test-output/institutionele_adressen"
-  database:  "c:/repos/ede/DATA/test-output/dd-sqlite-data"
-  logdir:    "c:/repos/ede/DATA/test-logs/ssd"
+  inputdir:  "c:/repos/ede/DATA/datadienst/dd-data/institutionele_adressen"
+  outputdir: "c:/repos/ede/DATA/datadienst/test-output/institutionele_adressen"
+  database:  "c:/repos/ede/DATA/datadienst/test-output/dd-sqlite-data"
+  logdir:    "c:/repos/ede/DATA/datadienst/test-logs/ssd"
 config:
   "adressen_lijst.csv":   
     encoding: ""
@@ -13,6 +13,8 @@ config:
         "Postcode": "POSTKOD"
         "Huisnummer": "HUISNUMMER"
         "Huisnummerletter": "HUISLETTER"
+      symmetric:
+        "Postcode" : "PC"
       remove : []
       keep : []
       date_to_year : []

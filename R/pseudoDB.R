@@ -360,6 +360,21 @@ pseudoDB <- R6::R6Class(
     },
     
     
+    symmetric_encrypt_columns = function(data, columns, new_names = NULL){
+    
+      for(i in seq_along(columns)){
+        
+        out_column <- ifelse(is.null(new_names[i]), columns[i], new_names[i])
+        
+        data[[out_column]] <- self$encrypt(data[[columns[i]]])  
+        
+      }  
+      
+      
+      data  
+    },
+    
+    
     anonymize_column = function(data, column, db_key = NULL,
                                 store_key_columns = NULL,
                                 file = NULL){
@@ -502,6 +517,10 @@ pseudoDB <- R6::R6Class(
       return(data)
     },
 
+    
+    
+    
+    
     process_files = function(files = NULL){
 
       if(is.null(files))files <- self$files
@@ -540,6 +559,8 @@ pseudoDB <- R6::R6Class(
           self$anonymize_columns(columns = names(cfg$encrypt),
                             db_keys = unlist(cfg$encrypt),
                             file = fn) %>%
+          self$symmetric_encrypt_columns(columns = names(cfg$symmetric),
+                                         new_names = unlist(cfg$symmetric)) %>%
           self$delete_columns(cfg$remove) %>%
           self$keep_columns(cfg$keep) %>%
           self$date_to_year(cfg$date_to_year) %>%
