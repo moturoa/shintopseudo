@@ -8,6 +8,10 @@ config:
   "adressen_lijst.csv":   
     encoding: ""
     csv-separator: ";"
+    store_key_columns: 
+      - "Postcode"
+      - "Huisnummer"
+      - "Huisnummerletter"
     config:
       encrypt : 
         "Postcode": "POSTKOD"

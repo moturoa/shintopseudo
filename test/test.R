@@ -19,6 +19,14 @@ devtools::load_all()
 
 .pdb <- pseudoDB$new(cfg_path, secret = "banaan")
 
+
+.pdb$process_files()
+
+.pdb$close_sqlite()
+
+
+
+
 .pdb$files
 .pdb$project
 
@@ -43,10 +51,6 @@ data3 <- .pdb$anonymize_columns(data1,
                                 db_keys = unlist(.pdb$config[[1]]$config$encrypt)
                                 )
 
-.pdb$process_files()
-
-
-.pdb$close_sqlite()
 
 
 

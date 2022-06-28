@@ -1,7 +1,7 @@
 Package: shintopseudo
 Type: Package
 Title: Read, validate, and anonymize data
-Version: 0.4
+Version: 0.4-2
 Author: Remko Duursma
 Maintainer: Remko Duursma <remko@shintolabs.nl>
 Description: New implementation of 'pseudomaker' scripts for Ede

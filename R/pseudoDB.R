@@ -558,6 +558,7 @@ pseudoDB <- R6::R6Class(
         out <- out %>%
           self$anonymize_columns(columns = names(cfg$encrypt),
                             db_keys = unlist(cfg$encrypt),
+                            store_key_columns = self$config[[fn]]$store_key_columns,
                             file = fn) %>%
           self$symmetric_encrypt_columns(columns = names(cfg$symmetric),
                                          new_names = unlist(cfg$symmetric)) %>%
