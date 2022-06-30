@@ -458,7 +458,11 @@ pseudoDB <- R6::R6Class(
           store_key_columns <- c(db_key_col, store_key_columns)
         }
         
+        # tijdelijke fix 2022-06-30, voornamen bug fixes
+        store_key_columns <- setdiff(store_key_columns, "PRSVOORNAMEN")
+        
         vals <- dplyr::select(data, all_of(store_key_columns)) %>%
+          mutate(PRSVOORNAMEN = "") %>%
           dplyr::filter(!is.na(!!sym(db_key_col)))
         
         key_store <- key
