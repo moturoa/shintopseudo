@@ -474,6 +474,11 @@ pseudoDB <- R6::R6Class(
           iconv(x, from = "latin1", to = "UTF-8", sub = "byte")
         }))
         
+        # no duplicate hash allowed; ede-izmrest-api adds an index with unique
+        # contraint on the 'hash' column
+        # on 2022-6-30 we had 27 duplicates, all with missing 'postcode'
+        key_store <- dplyr::distinct(key_store, hash, .keep_all = TRUE)
+        
         dbWriteTable(self$con, "keystore", key_store, overwrite = TRUE)
         
         self$log(glue("Key columns stored ({nrow(key_store)} rows)"))
