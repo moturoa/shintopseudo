@@ -12,8 +12,9 @@ library(safer)
 library(readr)
 
 #cfg_path  <- "test/config_ssd.yml"
- cfg_path  <- "test/config_instadr.yml"
+ #cfg_path  <- "test/config_instadr.yml"
 # cfg_path  <- "test/config_izm.yml"
+cfg_path  <- "test/config_brp.yml"
 
 devtools::load_all()
 
