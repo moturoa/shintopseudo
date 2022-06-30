@@ -79,8 +79,7 @@ pseudoDB <- R6::R6Class(
       
       futile.logger::flog.appender(futile.logger::appender.tee(fn), name = "pseudomaker")
       self$log("------------- start pseudoDB v. {packageVersion('shintopseudo')} -------------")
-      self$log("-------------  -------------")
-      
+
     },
     
     write_datalog = function(){
@@ -369,6 +368,8 @@ pseudoDB <- R6::R6Class(
         
         data[[out_column]] <- self$encrypt(data[[columns[i]]])  
         
+        self$log("{nrow(data)} values symmetric encrypted, column: {column} to {out_column}") 
+        
       }  
       
       
@@ -381,13 +382,6 @@ pseudoDB <- R6::R6Class(
                                 file = NULL){
       
       st <- proc.time()[3]
-      
-      # if(!column %in% names(data)){
-      #   self$log("Column {column} not found in data - exiting.", "fatal")
-      #   self$log("Available columns: {paste(names(data), collapse = ', ')}", "fatal")
-      #   self$set_error(file, "Column(s) not found")
-      #   return(NULL)
-      # }
       
       # db_key is for looking up encrypted value/hash pairs from the db.
       # if not provided, use column name itself.
@@ -457,6 +451,8 @@ pseudoDB <- R6::R6Class(
           self$log("Not all store_key_columns found in data, skipping saving.", "warn")
         }
         
+        self$log("Storing key columns (IZM)")
+        
         db_key_col <- names(db_key)
         if(!db_key_col %in% store_key_columns){
           store_key_columns <- c(db_key_col, store_key_columns)
@@ -479,6 +475,8 @@ pseudoDB <- R6::R6Class(
         }))
         
         dbWriteTable(self$con, "keystore", key_store, overwrite = TRUE)
+        
+        self$log(glue("Key columns stored ({nrow(key_store)} rows)"))
       }
       
       # Append value/hash to DB (only those rows not previously stored).
