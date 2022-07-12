@@ -368,7 +368,7 @@ pseudoDB <- R6::R6Class(
         
         data[[out_column]] <- self$encrypt(data[[columns[i]]])  
         
-        self$log("{nrow(data)} values symmetric encrypted, column: {column} to {out_column}") 
+        self$log("{nrow(data)} values symmetric encrypted, column: {columns[i]} to {out_column}") 
         
       }  
       
