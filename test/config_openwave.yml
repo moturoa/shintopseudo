@@ -1,0 +1,34 @@
+project:
+  projectname: "OpenWave"
+  inputdir:  "c:/repos/ede/DATA/om/openwave"
+  outputdir: "c:/repos/ede/DATA/om/openwave_out"
+  database:  "c:/repos/ede/DATA/datadienst/test-output/dd-sqlite-data"
+  logdir:    "c:/repos/ede/DATA/datadienst/test-logs/ssd"
+config:
+  "DataEV2.csv":   
+    encoding: ""
+    csv-separator: ";"
+    readmethod: 2
+    config:
+      split_address:
+        column: "Adres"
+        bag_path: "c:/repos/ede/DATA/bag_ede.csv"
+        columns_out: 
+          addresseerbaarobject_id: "address_id"
+          openbareruimtenaam: "openbareruimtenaam"
+          huisnummer: "huisnummer_bag"
+          huisletter: "huisletter_bag"
+          huisnummertoevoeging: "huisnummertoevoeging_bag"
+      encrypt: 
+        "Contactpersoon ODDV": "persoon"
+        "Contactpersoon Email": "EMAIL"
+        "Contactpersoon telefoon": "TELEFOON"
+        "Achternaam": "achternaam"
+        "BSN-nummer": "CL_BSN"
+        "huisnummer_bag" : "huisnummer"
+        "huisletter_bag" : "huisletter_bag"
+        "huisnummertoevoeging_bag" : "huisnummertoevoeging_bag"
+      symmetric:
+        "address_id" : "address_id"
+      remove : []
+      keep : []

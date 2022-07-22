@@ -12,6 +12,7 @@
 #' @importFrom futile.logger flog.appender appender.tee
 #' @importFrom lubridate year
 #' @importFrom uuid UUIDgenerate
+#' @importFrom shintobag validate_address
 pseudoDB <- R6::R6Class(
   public = list(
     
@@ -526,7 +527,22 @@ pseudoDB <- R6::R6Class(
     },
 
     
+    read_bag_extract = function(path){
+      data.table::fread(path)
+    },
     
+    split_address = function(data, column, columns_out, bag_path){
+      
+      bag <- as.data.frame(self$read_bag_extract(bag_path))
+      data <- as.data.frame(data)
+      
+      shintobag::validate_address(data = data, 
+                                  adres_column = column, 
+                                  bag = bag, 
+                                  bag_columns = names(columns_out))
+      
+      
+    },
     
     
     process_files = function(files = NULL){

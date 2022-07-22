@@ -14,17 +14,33 @@ library(readr)
 #cfg_path  <- "test/config_ssd.yml"
  #cfg_path  <- "test/config_instadr.yml"
 # cfg_path  <- "test/config_izm.yml"
-cfg_path  <- "test/config_brp.yml"
+cfg_path  <- "test/config_openwave.yml"
 
 devtools::load_all()
 
 .pdb <- pseudoDB$new(cfg_path, secret = "banaan")
 
 
-.pdb$process_files()
+# .pdb$process_files()
+# 
+# .pdb$close_sqlite()
+# 
 
-.pdb$close_sqlite()
 
+
+bag <- read.csv("c:/repos/ede/DATA/om/bag_ede.csv")
+z <- read_yaml("test/config_openwave.yml")
+
+columns_out <- z$config[[1]]$config$split_address$columns_out
+data <- .pdb$read_data("DataEV2.csv")
+
+
+shintobag::split_adres_field(data$Adres)
+
+out <- shintobag::validate_address(data = data, 
+                                   adres_column = "Adres", 
+                                   bag = bag, 
+                                   bag_columns = names(columns_out))
 
 
 
