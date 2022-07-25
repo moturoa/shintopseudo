@@ -538,10 +538,10 @@ pseudoDB <- R6::R6Class(
       data <- as.data.frame(data)
       
       tm <- system.time({
-        out <- shintobag::validate_address(data = data, 
-                                           adres_column = column, 
-                                           bag = bag, 
-                                           bag_columns = names(columns_out)) %>%
+        out <- validate_address(data = data, 
+                                adres_column = column, 
+                                bag = bag, 
+                                bag_columns = names(columns_out)) %>%
           as.data.frame  
       })
       
