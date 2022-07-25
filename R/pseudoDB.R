@@ -549,7 +549,7 @@ pseudoDB <- R6::R6Class(
         as.list(names(x)) %>% setNames(unlist(x))
       }
       
-      nonna <- mean(!is.na(out$adresseerbaarobject_id))
+      nonna <- mean(!is.na(out[[names(columns_out)[1]]]))
       
       self$log("Addresses validated: {round(nonna*100,1)}% success in {round(tm[3],1)} sec.")
       

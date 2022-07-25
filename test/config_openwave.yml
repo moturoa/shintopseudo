@@ -14,8 +14,7 @@ config:
         column: "Adres"
         bag_path: "c:/repos/ede/DATA/om/bag_ede.csv"
         columns_out: 
-          adresseerbaarobject_id: "address_id"
-          buurt_code_cbs: "buurt_code_cbs"
+          adresseerbaarobject: "address_id"
       encrypt: 
         "Handelsnaam" : "bedrijfsnaam"
         "Bedrijfsnaaam" : "bedrijfsnaam"

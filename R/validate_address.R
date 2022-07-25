@@ -44,7 +44,7 @@ merge_bag_columns <- function(data, bag, bag_columns = "adresseerbaarobject_id")
 
   # nog ca. 100 panden met meer dan 1 rij per bag_adres.
   # deze hebben meerdere pandid per adres (geen idee waarom).
-  bag <- distinct(bag, adresseerbaarobject_id, .keep_all = TRUE) %>%
+  bag <- distinct(bag, !!sym(bag_columns[1]), .keep_all = TRUE) %>%
     mutate(huisnummer = as.character(huisnummer), # was vroeger char
            huisletter = tidyr::replace_na(huisletter, ""),
            huisnummer = tidyr::replace_na(huisnummer, ""),
