@@ -341,7 +341,6 @@ pseudoDB <- R6::R6Class(
     },
     
     
-    
     #' @description Symmetrically encrypt a vector using the secret
     #' @param x A character vector
     encrypt = function(x){
@@ -528,19 +527,33 @@ pseudoDB <- R6::R6Class(
 
     
     read_bag_extract = function(path){
-      data.table::fread(path)
+      data.table::fread(path, colClasses = "character")
     },
     
-    split_address = function(data, column, columns_out, bag_path){
+    validate_address = function(data, column, columns_out, bag_path){
+      
+      if(is.null(column))return(data)
       
       bag <- as.data.frame(self$read_bag_extract(bag_path))
       data <- as.data.frame(data)
       
-      shintobag::validate_address(data = data, 
-                                  adres_column = column, 
-                                  bag = bag, 
-                                  bag_columns = names(columns_out))
+      tm <- system.time({
+        out <- shintobag::validate_address(data = data, 
+                                           adres_column = column, 
+                                           bag = bag, 
+                                           bag_columns = names(columns_out)) %>%
+          as.data.frame  
+      })
       
+      switch_list <- function(x){
+        as.list(names(x)) %>% setNames(unlist(x))
+      }
+      
+      nonna <- mean(!is.na(out$adresseerbaarobject_id))
+      
+      self$log("Addresses validated: {round(nonna*100,1)}% success in {round(tm[3],1)} sec.")
+      
+      dplyr::rename(out, !!!switch_list(columns_out))
       
     },
     
@@ -569,9 +582,12 @@ pseudoDB <- R6::R6Class(
           next
         }
         
-        if(!all(names(cfg$encrypt) %in% names(out))){
+        # available columns: columns in data + output from validate_address
+        data_colnames <- c(names(out), unlist(cfg$validate_address$columns_out))
+        
+        if(!all(names(cfg$encrypt) %in% data_colnames)){
           
-          nm_mis <- setdiff(names(out), names(cfg$encrypt))
+          nm_mis <- setdiff(names(cfg$encrypt), names(out))
           
           self$log("Columns not found: {paste(nm_mis, collapse=',')}.", "fatal")
           self$log("Available columns: {paste(names(out), collapse = ',')}", "fatal")
@@ -580,6 +596,9 @@ pseudoDB <- R6::R6Class(
         }
         
         out <- out %>%
+          self$validate_address(column = cfg$validate_address$column, 
+                                columns_out = cfg$validate_address$columns_out, 
+                                bag_path = cfg$validate_address$bag_path) %>%
           self$anonymize_columns(columns = names(cfg$encrypt),
                             db_keys = unlist(cfg$encrypt),
                             store_key_columns = self$config[[fn]]$config$store_key_columns,

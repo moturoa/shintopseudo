@@ -21,28 +21,16 @@ devtools::load_all()
 .pdb <- pseudoDB$new(cfg_path, secret = "banaan")
 
 
-# .pdb$process_files()
-# 
-# .pdb$close_sqlite()
-# 
+.pdb$process_files()
+
+.pdb$close_sqlite()
 
 
 
-bag <- read.csv("c:/repos/ede/DATA/om/bag_ede.csv")
-z <- read_yaml("test/config_openwave.yml")
-
-columns_out <- z$config[[1]]$config$split_address$columns_out
-data <- .pdb$read_data("DataEV2.csv")
 
 
-shintobag::split_adres_field(data$Adres)
 
-out <- shintobag::validate_address(data = data, 
-                                   adres_column = "Adres", 
-                                   bag = bag, 
-                                   bag_columns = names(columns_out))
-
-
+# tests
 
 .pdb$files
 .pdb$project

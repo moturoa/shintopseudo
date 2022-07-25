@@ -10,25 +10,30 @@ config:
     csv-separator: ";"
     readmethod: 2
     config:
-      split_address:
+      validate_address:
         column: "Adres"
-        bag_path: "c:/repos/ede/DATA/bag_ede.csv"
+        bag_path: "c:/repos/ede/DATA/om/bag_ede.csv"
         columns_out: 
-          addresseerbaarobject_id: "address_id"
-          openbareruimtenaam: "openbareruimtenaam"
-          huisnummer: "huisnummer_bag"
-          huisletter: "huisletter_bag"
-          huisnummertoevoeging: "huisnummertoevoeging_bag"
+          adresseerbaarobject_id: "address_id"
+          buurt_code_cbs: "buurt_code_cbs"
       encrypt: 
-        "Contactpersoon ODDV": "persoon"
-        "Contactpersoon Email": "EMAIL"
-        "Contactpersoon telefoon": "TELEFOON"
-        "Achternaam": "achternaam"
-        "BSN-nummer": "CL_BSN"
-        "huisnummer_bag" : "huisnummer"
-        "huisletter_bag" : "huisletter_bag"
-        "huisnummertoevoeging_bag" : "huisnummertoevoeging_bag"
+        "Handelsnaam" : "bedrijfsnaam"
+        "Bedrijfsnaaam" : "bedrijfsnaam"
+        "Handelsregister": "KvKnummer"
       symmetric:
         "address_id" : "address_id"
       remove : []
-      keep : []
+      keep : 
+        - "address_id"
+        - "buurt_code_cbs"
+        - "Module"
+        - "Zaakcode"
+        - "Zaaksoort"
+        - "Omschrijving"
+        - "Aanvraagdatum"
+        - "Besluitdatum"
+        - "Besluit"
+        - "Plaats"
+        - "Bedrijfsnaaam"
+        - "Handelsnaam"
+        - "Handelsregister"
