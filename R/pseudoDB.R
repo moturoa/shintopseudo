@@ -233,7 +233,7 @@ pseudoDB <- R6::R6Class(
         skip <- as.numeric(cfg$skip_lines)
       }
       
-      if(is.null(cfg$readfunction)){
+      if(is.null(cfg$readfunction) && is.null(cfg$readmethod)){
         tm <- system.time({
           out <- self$read_data_fread(fn_path, 
                                       quote = "\"",
@@ -244,15 +244,35 @@ pseudoDB <- R6::R6Class(
         })  
       } else {
         
-        if(!exists(cfg$readfunction)){
-          self$set_error(fn, paste("readfunction",cfg$readfunction,"not found."))
-          return(NULL)
-        } else {
-          read_fun <- base::get(cfg$readfunction)
-          tm <- system.time(
-            out <- read_fun(fn_path)
-          )
-        }
+        if(!is.null(cfg$readfunction)){
+          
+          if(!exists(cfg$readfunction)){
+            self$set_error(fn, paste("readfunction",cfg$readfunction,"not found."))
+            return(NULL)
+          } else {
+            read_fun <- base::get(cfg$readfunction)
+            tm <- system.time(
+              out <- read_fun(fn_path)
+            )
+          }  
+          
+        } else if(!is.null(cfg$readmethod)){
+          
+          if(cfg$readmethod == "json"){
+            
+            out <- jsonlite::fromJSON(fn_path)
+            
+            slot_name <- cfg[["json_features_name"]]
+            if(!is.null(slot_name)){
+              out <- out[[slot_name]]
+            }
+            
+          } else {
+            self$set_error(fn, paste("readmethod",cfg$readmethod,"not supported."))
+          }
+          
+        } 
+        
         
       }
       
