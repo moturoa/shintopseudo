@@ -260,7 +260,9 @@ pseudoDB <- R6::R6Class(
           
           if(cfg$readmethod == "json"){
             
-            out <- jsonlite::fromJSON(fn_path)
+            tm <- system.time(
+              out <- jsonlite::fromJSON(fn_path)
+            )
             
             slot_name <- cfg[["json_features_name"]]
             if(!is.null(slot_name)){
