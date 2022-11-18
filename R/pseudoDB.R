@@ -264,6 +264,22 @@ pseudoDB <- R6::R6Class(
               out <- jsonlite::fromJSON(fn_path)
             )
             
+            fun_code <- cfg[["post_read_function"]]
+            
+            if(!is.null(fun_code)){
+              if(grepl("^function[(]", fun_code)){
+                post_read_fun <- eval(parse(text = fun_code))
+              } else {
+                post_read_fun <- base::get(fun_code)
+              }
+              
+              out <- try(post_read_fun(out))
+              if(inherits(out, "try-error")){
+                self$set_error(fn, paste("problem executing code: ", fun_code))
+              }
+            }
+            
+            
             slot_name <- cfg[["json_features_name"]]
             if(!is.null(slot_name)){
               out <- out[[slot_name]]
