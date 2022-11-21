@@ -423,7 +423,7 @@ pseudoDB <- R6::R6Class(
       
       # db_key is for looking up encrypted value/hash pairs from the db.
       # if not provided, use column name itself.
-      if(is.null(db_key) || db_key == ""){
+      if(is.null(db_key) || is.na(db_key) || db_key == ""){
         self$log("No key set for {column}, using column name as key - safer to set a key!", "warn")
         db_key <- column
       }
