@@ -1,0 +1,97 @@
+project:
+  inputdir:  "/data/izm-input/brp"
+  outputdir: "/data/izm-output/brp"
+  database:  "/data/izm-sqlite-data"
+  logdir:    "/data/izm-logs/brp"
+config:
+  "BZSC58Q00_pink.csv":   
+    encoding: ""
+    csv-separator: ";"
+    config:
+      encrypt : 
+        "PRSBURGERSERVICENUMMER": "CL_BSN"
+        "PRSANUMMER": "CL_A_NR"
+        "VBLHSTSTRAATNAAM" : "STRAATNAAM"
+        "VBLHSTHUISNUMMER" : "HUISNUMMER"
+        "VBLHSTHUISLETTER" : "HUISLETTER"
+        "VBLHSTHUISNUMMERTOEVOEGING" : "HUISNR_TOEV"
+        "VBLHSTPOSTCODE" : "POSTKOD"
+        "VBLHSTADRESOPGEMAAKT" : "ADRES"
+      remove : []
+      keep : []
+      date_to_year : []
+  "BZSHUWQ00_pink.csv":   
+    encoding: ""
+    csv-separator: ";"
+    config:
+      encrypt : 
+        "PRSBURGERSERVICENUMMER": "CL_BSN"
+        "PRSANUMMER": "CL_A_NR"
+        "HUWBURGERSERVICENUMMER": "CL_BSN"
+        "HUWANUMMER": "CL_A_NR"
+      remove : []
+      keep : []
+      date_to_year : []
+  "bzsprsq00_pink.csv":   
+    encoding: ""
+    csv-separator: ";"
+    config:
+      store_key_columns: 
+        - "PRSBURGERSERVICENUMMER"
+        - "VBLPOSTCODE"
+        - "VBLSTRAATNAAM"
+        - "VBLHUISNUMMER"
+        - "VBLHUISLETTER"
+        - "VBLHUISNUMMERTOEVOEGING"
+        - "PRSGESLACHTSNAAM"
+        - "PRSNAAMOPGEMAAKT"
+        - "PRSGEBOORTEDATUM"
+      encrypt : 
+        "PRSBURGERSERVICENUMMER": "CL_BSN"
+        "PRSANUMMER": "CL_A_NR"
+        "VBLSTRAATNAAM": "STRAATNAAM"
+        "VBLHUISNUMMER" : "HUISNUMMER"
+        "VBLHUISLETTER" : "HUISLETTER"
+        "VBLHUISNUMMERTOEVOEGING" : "HUISNR_TOEV"
+        "VBLAANDUIDINGBIJHUISNUMMER" : "HUISNRAANDUIDING"
+        "VBLPOSTCODE" : "POSTKOD"
+        "OU1ANUMMER" : "CL_A_NR"
+        "OU2ANUMMER" : "CL_A_NR"
+        "OU1BURGERSERVICENUMMER" : "CL_BSN"
+        "OU2BURGERSERVICENUMMER" : "CL_BSN"
+        "PRSNAAMOPGEMAAKT" : "NAAM"
+        "PRSVOORNAMEN" : "VOORNAMEN"
+        "OU1VOORNAMEN" : "VOORNAMEN"
+        "OU2VOORNAMEN" : "VOORNAMEN"
+        "OU1GESLACHTSNAAM" : "GESLACHTSNAAM"
+        "OU2GESLACHTSNAAM" : "GESLACHTSNAAM"
+        "PRSVOORVOEGSELGESLACHTSNAAM": "VOORVOEGSEL"
+        "PRSGESLACHTSNAAM": "GESLACHTSNAAM"
+      remove : 
+        - "VBLHADRESOPGEMAAKT"
+        - "VBLWOONPLAATSOPGEMAAKT"
+        - "OU1VOORLETTERS"
+        - "OU1VOORVOEGSELGESLACHTSNAAM"
+        - "OU1NAAMOPGEMAAKT"
+        - "OU2VOORLETTERS"
+        - "OU2VOORVOEGSELGESLACHTSNAAM"
+        - "OU2NAAMOPGEMAAKT"
+      keep : []
+      date_to_year : []
+  "BZSKINQ00_pink.csv":   
+    encoding: ""
+    csv-separator: ";"
+    config:
+      encrypt : 
+        "KNDBURGERSERVICENUMMER": "CL_BSN"
+        "PRSANUMMER": "CL_A_NR"
+        "KNDANUMMER" : "CL_A_NR"
+      remove : 
+        - "KNDVOORNAMEN"
+        - "KNDVOORLETTERS"
+        - "KNDVOORVOEGSELGESLACHTSNAAM"
+        - "KNDGESLACHTSNAAM"
+        - "KNDNAAMOPGEMAAKT"
+      keep : []
+      date_to_year : []
+

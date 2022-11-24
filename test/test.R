@@ -14,7 +14,8 @@ library(readr)
 #cfg_path  <- "test/config_ssd.yml"
  #cfg_path  <- "test/config_instadr.yml"
 # cfg_path  <- "test/config_izm.yml"
-cfg_path  <- "test/config_openwave.yml"
+#cfg_path  <- "test/config_openwave.yml"
+cfg_path <- "test/config_brp_IZM_short.yml"
 
 devtools::load_all()
 

@@ -247,7 +247,7 @@ pseudoDB <- R6::R6Class(
         if(!is.null(cfg$readfunction)){
           
           if(!exists(cfg$readfunction)){
-            self$set_error(fn, paste("readfunction",cfg$readfunction,"not found."))
+            self$set_error(fn, paste("readfunction",cfg$readfunction,"not found. Must be present in app/R/ in pseudomaker."))
             return(NULL)
           } else {
             read_fun <- base::get(cfg$readfunction)

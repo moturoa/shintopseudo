@@ -1,0 +1,30 @@
+project:
+  inputdir:  "c:/repos/ede/DATA/izm"
+  outputdir: "c:/repos/ede/DATA/izm/out"
+  database:  "c:/repos/ede/DATA/izm/q"
+  logdir:    "c:/repos/ede/DATA/izm/log"
+config:
+  "tmp.c":   
+    encoding: "Latin-1"
+    csv-separator: ";"
+    config:
+      store_key_columns: 
+        - "PRSBURGERSERVICENUMMER"
+        - "VBLPOSTCODE"
+        - "VBLSTRAATNAAM"
+        - "VBLHUISNUMMER"
+        - "VBLHUISLETTER"
+        - "VBLHUISNUMMERTOEVOEGING"
+        - "PRSGESLACHTSNAAM"
+        - "PRSNAAMOPGEMAAKT"
+        - "PRSGEBOORTEDATUM"
+      encrypt : 
+        "PRSBURGERSERVICENUMMER": "CL_BSN"
+        "PRSNAAMOPGEMAAKT" : "NAAM"
+        "PRSVOORNAMEN" : "VOORNAMEN"
+      keep : 
+        - "PRSBURGERSERVICENUMMER"
+        - "PRSNAAMOPGEMAAKT"
+        - "PRSVOORNAMEN"
+
+
