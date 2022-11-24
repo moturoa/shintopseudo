@@ -246,14 +246,21 @@ pseudoDB <- R6::R6Class(
         
         if(!is.null(cfg$readfunction)){
           
-          if(!exists(cfg$readfunction)){
+          flog.info(paste("Starting custom read function:",cfg$readfunction))
+          
+          if(!exists(cfg$readfunction, mode = "function")){
             self$set_error(fn, paste("readfunction",cfg$readfunction,"not found. Must be present in app/R/ in pseudomaker."))
             return(NULL)
           } else {
             read_fun <- base::get(cfg$readfunction)
+            
             tm <- system.time(
-              out <- read_fun(fn_path)
+              out <- try(read_fun(fn_path))
             )
+            
+            if(inherits(out, "try-error")){
+              self$set_error(fn, "Error in custom read function")
+            }
           }  
           
         } else if(!is.null(cfg$readmethod)){
@@ -286,7 +293,7 @@ pseudoDB <- R6::R6Class(
             }
             
           } else {
-            self$set_error(fn, paste("readmethod",cfg$readmethod,"not supported."))
+            self$set_error(fn, paste("readmethod",cfg$readmethod,"argument obsolete"))
           }
           
         } 
