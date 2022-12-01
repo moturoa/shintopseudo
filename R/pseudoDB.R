@@ -502,12 +502,8 @@ pseudoDB <- R6::R6Class(
         if(!db_key_col %in% store_key_columns){
           store_key_columns <- c(db_key_col, store_key_columns)
         }
-        
-        # tijdelijke fix 2022-06-30, voornamen bug fixes
-        store_key_columns <- setdiff(store_key_columns, "PRSVOORNAMEN")
-        
+
         vals <- dplyr::select(data, all_of(store_key_columns)) %>%
-          mutate(PRSVOORNAMEN = "") %>%
           dplyr::filter(!is.na(!!sym(db_key_col)))
         
         key_store <- key
@@ -517,12 +513,7 @@ pseudoDB <- R6::R6Class(
           dplyr::left_join(vals, by = c(value = db_key_col)) %>%
           dplyr::rename(!!db_key_col := value) %>%
           dplyr::select(-key)
-        
-        # Set encoding to UTF8
-        key_store <- as_tibble(lapply(key_store, function(x){
-          iconv(x, from = "latin1", to = "UTF-8", sub = "byte")
-        }))
-        
+
         # no duplicate hash allowed; ede-izmrest-api adds an index with unique
         # contraint on the 'hash' column
         # on 2022-6-30 we had 27 duplicates, all with missing 'postcode'
@@ -622,10 +613,10 @@ pseudoDB <- R6::R6Class(
           next
         }
         
-        if(nrow(out) < 3){
-          self$set_error(fn, "File is (nearly) empty")
-          next
-        }
+        # if(nrow(out) < 3){
+        #   self$set_error(fn, "File is (nearly) empty")
+        #   next
+        # }
         
         # available columns: columns in data + output from validate_address
         data_colnames <- c(names(out), unlist(cfg$validate_address$columns_out))
