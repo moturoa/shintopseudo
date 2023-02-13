@@ -438,12 +438,10 @@ pseudoDB <- R6::R6Class(
       # value/hash pairs
       u <- unique(data[[column]])
       
-      #! next 2 steps to pm_normalize
-      # remove spaces (anywhere)
-      u <- unique(gsub("[[:space:]]", "", u))
+      u_nospace <- gsub("[[:space:]]", "", u)
       
       # remove values we don't want to hash.
-      u <- u[!is.na(u) & u != ""]
+      u <- u[!is.na(u) & u != "" & nchar(u_nospace) > 0]
       
       # key/value/hash table (will refill with already hashed values below)
       key <- tibble(
