@@ -4,20 +4,22 @@ project:
   database:  "c:/repos/ede/DATA/izm/q"
   logdir:    "c:/repos/ede/DATA/izm/log"
 config:
-  "tmp.c":   
-    encoding: "Latin-1"
+  "bklein":
+    allow_short: true
+    encoding: "UTF-8"
     csv-separator: ";"
     config:
       store_key_columns: 
         - "PRSBURGERSERVICENUMMER"
-        - "VBLPOSTCODE"
-        - "VBLSTRAATNAAM"
-        - "VBLHUISNUMMER"
-        - "VBLHUISLETTER"
-        - "VBLHUISNUMMERTOEVOEGING"
+        # - "VBLPOSTCODE"
+        # - "VBLSTRAATNAAM"
+        # - "VBLHUISNUMMER"
+        # - "VBLHUISLETTER"
+        # - "VBLHUISNUMMERTOEVOEGING"
         - "PRSGESLACHTSNAAM"
+        - "PRSVOORNAMEN"
         - "PRSNAAMOPGEMAAKT"
-        - "PRSGEBOORTEDATUM"
+        # - "PRSGEBOORTEDATUM"
       encrypt : 
         "PRSBURGERSERVICENUMMER": "CL_BSN"
         "PRSNAAMOPGEMAAKT" : "NAAM"

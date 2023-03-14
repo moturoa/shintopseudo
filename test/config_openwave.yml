@@ -1,30 +1,28 @@
 project:
-  projectname: "OpenWave"
-  inputdir:  "c:/repos/ede/DATA/om/openwave"
-  outputdir: "c:/repos/ede/DATA/om/openwave_out"
-  database:  "c:/repos/ede/DATA/datadienst/test-output/dd-sqlite-data"
-  logdir:    "c:/repos/ede/DATA/datadienst/test-logs/ssd"
+  projectname: "OPENWAVE"
+  inputdir:  "c:/repos/shintopseudo/test"
+  outputdir: "c:/repos/shintopseudo/test"
+  database:  "c:/repos/ede/DATA"
+  logdir:    "c:/repos/ede/DATA"
 config:
-  "DataEV2.csv":   
-    encoding: ""
+  "d":   
+    encoding: "Latin-1"
     csv-separator: ";"
-    readmethod: 2
     config:
-      validate_address:
-        column: "Adres"
-        bag_path: "c:/repos/ede/DATA/om/bag_ede.csv"
-        columns_out: 
-          adresseerbaarobject: "address_id"
+      # validate_address:
+      #   column: "Adres"
+      #   bag_path: "/data/om-input/bag/bag_ede.csv"
+      #   columns_out: 
+      #     adresseerbaarobject: "address_id"
       encrypt: 
         "Handelsnaam" : "bedrijfsnaam"
         "Bedrijfsnaaam" : "bedrijfsnaam"
         "Handelsregister": "KvKnummer"
-      symmetric:
-        "address_id" : "address_id"
+      # symmetric:
+      #   "address_id" : "address_id"
       remove : []
       keep : 
         - "address_id"
-        - "buurt_code_cbs"
         - "Module"
         - "Zaakcode"
         - "Zaaksoort"

@@ -13,6 +13,7 @@
 #' @importFrom lubridate year
 #' @importFrom uuid UUIDgenerate
 #' @importFrom shintobag validate_address
+#' @importFrom stringi stri_trans_general
 pseudoDB <- R6::R6Class(
   public = list(
     
@@ -516,6 +517,12 @@ pseudoDB <- R6::R6Class(
         # contraint on the 'hash' column
         # on 2022-6-30 we had 27 duplicates, all with missing 'postcode'
         key_store <- dplyr::distinct(key_store, hash, .keep_all = TRUE)
+        
+        
+        # Store normalized version of 'name' column for easier searching
+        if("PRSNAAMOPGEMAAKT" %in% store_key_columns){
+          key_store$PRSNAAMOPGEMAAKTNORM <- stringi::stri_trans_general(key_store$PRSNAAMOPGEMAAKT, id = "Latin-ASCII")
+        }
         
         dbWriteTable(self$con, "keystore", key_store, overwrite = TRUE)
         

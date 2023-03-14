@@ -14,8 +14,9 @@ library(readr)
 #cfg_path  <- "test/config_ssd.yml"
  #cfg_path  <- "test/config_instadr.yml"
 # cfg_path  <- "test/config_izm.yml"
-#cfg_path  <- "test/config_openwave.yml"
-cfg_path <- "test/config_brp_IZM_short.yml"
+cfg_path  <- "test/config_openwave.yml"
+#cfg_path <- "test/config_brp_IZM_short.yml"
+
 
 devtools::load_all()
 
@@ -27,7 +28,18 @@ devtools::load_all()
 .pdb$close_sqlite()
 
 
+.pdb <- pseudoDB$new(cfg_path, secret = "banaan")
 
+con <- dbConnect(RSQLite::SQLite(), "c:/repos/ede/DATA/izm/q/shinto_pseudomaker.sqlite")
+
+dat <- dbReadTable(con, "datadienst")
+
+
+.pdb$decrypt(dat$value)
+
+
+key <- dbReadTable(con, "keystore")
+key
 
 
 

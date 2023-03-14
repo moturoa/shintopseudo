@@ -1,10 +1,11 @@
 Package: shintopseudo
 Type: Package
 Title: Read, validate, encrypt, and anonymize data
-Version: 0.6-2
+Version: 0.7
 Author: Remko Duursma
 Maintainer: Remko Duursma <remko@shintolabs.nl>
 Description: R package used in Ede IZM, datadienst & ondermijning dataplatforms
+Imports: stringi,DBI,R.utils,RSQLite,data.table,futile.logger,glue,lubridate,safer,tools,uuid
 License: GPL-2
 Encoding: UTF-8
 LazyData: false
