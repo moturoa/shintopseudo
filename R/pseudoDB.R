@@ -23,8 +23,11 @@ pseudoDB <- R6::R6Class(
     files = NULL,
     dbtable = NULL,
     datalog = NULL,
+    max_n_lines = NULL,
     
-    initialize = function(config_file, secret, log_to = c("file","stdout")){
+    initialize = function(config_file, secret, 
+                          log_to = c("file","stdout"),
+                          max_n_lines = NULL){
       
       log_to <- match.arg(log_to)
       
@@ -32,6 +35,7 @@ pseudoDB <- R6::R6Class(
       self$config <- cfg$config
       self$project <- cfg$project
       
+      self$max_n_lines <- max_n_lines
       self$files <- names(self$config)
       
       self$check_files_exist()
@@ -350,6 +354,8 @@ pseudoDB <- R6::R6Class(
         encoding <- "unknown"
       }
       
+      nrows <- ifelse(is.null(self$max_n_lines), Inf,  self$max_n_lines)
+      
       tm <- system.time({
         
         out <- try(data.table::fread(fn, 
@@ -358,6 +364,7 @@ pseudoDB <- R6::R6Class(
                                      fill = fill,
                                      skip = skip,
                                      encoding = encoding,
+                                     nrows = nrows,
                                      showProgress = FALSE,
                                      colClasses = "character"),
                    silent = TRUE)
@@ -521,12 +528,14 @@ pseudoDB <- R6::R6Class(
         
         
         # Store normalized version of 'name' column for easier searching
-        if(!is.null(normalise_key_columns) & column %in% names(normalise_key_columns)){
-          
-          nm <- normalise_key_columns[[column]]
-          self$log(glue("Storing normalised form of column: {column} to column {nm}"))
-          key_store[[nm]] <- stringi::stri_trans_general(key_store[[column]], id = "Latin-ASCII")
-          
+        for(keycol in store_key_columns){
+          if(!is.null(normalise_key_columns) && keycol %in% names(normalise_key_columns)){
+            
+            nm <- normalise_key_columns[[keycol]]
+            self$log(glue("Storing normalised form of column: {keycol} to column {nm}"))
+            key_store[[nm]] <- stringi::stri_trans_general(key_store[[keycol]], id = "Latin-ASCII")
+            
+          }
         }
         
         # Write keys

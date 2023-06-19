@@ -14,13 +14,14 @@ library(readr)
 #cfg_path  <- "test/config_ssd.yml"
  #cfg_path  <- "test/config_instadr.yml"
 # cfg_path  <- "test/config_izm.yml"
-cfg_path  <- "test/config_openwave.yml"
-#cfg_path <- "test/config_brp_IZM_short.yml"
+#cfg_path  <- "test/config_openwave.yml"
+cfg_path <- "test/config_brp_IZM_short.yml"
 
 
 devtools::load_all()
 
-.pdb <- pseudoDB$new(cfg_path, secret = "banaan")
+.pdb <- pseudoDB$new(cfg_path, secret = "banaan",
+                     max_n_lines = 1000)
 
 
 .pdb$process_files()

@@ -1,10 +1,10 @@
 project:
-  inputdir:  "c:/repos/ede/DATA/izm"
+  inputdir:  "c:/repos/ede/DATA/izm-data/brp"
   outputdir: "c:/repos/ede/DATA/izm/out"
   database:  "c:/repos/ede/DATA/izm/q"
   logdir:    "c:/repos/ede/DATA/izm/log"
 config:
-  "bklein":
+  "bzsprsq00_pink.csv":
     allow_short: true
     encoding: "UTF-8"
     csv-separator: ";"
@@ -20,6 +20,9 @@ config:
         - "PRSVOORNAMEN"
         - "PRSNAAMOPGEMAAKT"
         # - "PRSGEBOORTEDATUM"
+      normalise_key_columns:
+        "PRSNAAMOPGEMAAKT" : "PRSNAAMOPGEMAAKTNORM"
+        "PRSGESLACHTSNAAM" : "PRSGESLACHTSNAAMNORM"
       encrypt : 
         "PRSBURGERSERVICENUMMER": "CL_BSN"
         "PRSNAAMOPGEMAAKT" : "NAAM"
