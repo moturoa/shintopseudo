@@ -425,6 +425,7 @@ pseudoDB <- R6::R6Class(
     
     anonymize_column = function(data, column, db_key = NULL,
                                 store_key_columns = NULL,
+                                normalise_key_columns = NULL,
                                 file = NULL){
       
       st <- proc.time()[3]
@@ -520,10 +521,15 @@ pseudoDB <- R6::R6Class(
         
         
         # Store normalized version of 'name' column for easier searching
-        if("PRSNAAMOPGEMAAKT" %in% store_key_columns){
-          key_store$PRSNAAMOPGEMAAKTNORM <- stringi::stri_trans_general(key_store$PRSNAAMOPGEMAAKT, id = "Latin-ASCII")
+        if(!is.null(normalise_key_columns) & column %in% names(normalise_key_columns)){
+          
+          nm <- normalise_key_columns[[column]]
+          self$log(glue("Storing normalised form of column: {column} to column {nm}"))
+          key_store[[nm]] <- stringi::stri_trans_general(key_store[[column]], id = "Latin-ASCII")
+          
         }
         
+        # Write keys
         dbWriteTable(self$con, "keystore", key_store, overwrite = TRUE)
         
         self$log(glue("Key columns stored ({nrow(key_store)} rows)"))
@@ -643,6 +649,7 @@ pseudoDB <- R6::R6Class(
           self$anonymize_columns(columns = names(cfg$encrypt),
                             db_keys = unlist(cfg$encrypt),
                             store_key_columns = self$config[[fn]]$config$store_key_columns,
+                            normalise_key_columns = self$config[[fn]]$config$normalise_key_columns,
                             file = fn) %>%
           self$symmetric_encrypt_columns(columns = names(cfg$symmetric),
                                          new_names = unlist(cfg$symmetric)) %>%
