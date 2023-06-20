@@ -544,15 +544,16 @@ pseudoDB <- R6::R6Class(
           # IZM special :(
           if(keycol == "PRSGESLACHTSNAAM"){
             
-            key_store[["PRSGESLACHTSNAAM"]] <- trimws(paste(key_store[["PRSVOORVOEGSELGESLACHTSNAAM"]],
-                                                            key_store[["PRSGESLACHTSNAAM"]]))
+            vv <- key_store[["PRSVOORVOEGSELGESLACHTSNAAM"]]
+            vv[is.na(vv)] <- ""
+            
+            key_store[["PRSGESLACHTSNAAM"]] <- trimws(paste(vv, key_store[["PRSGESLACHTSNAAM"]]))
             
             # we hebben geen normalised form van het voorvoegsel dus hopen dat er 
             # weinig voorvoegsels zijn zonder speciale tekens ...
-            key_store[["PRSGESLACHTSNAAMNORM"]] <- trimws(paste(key_store[["PRSVOORVOEGSELGESLACHTSNAAM"]],
-                                                                key_store[["PRSGESLACHTSNAAMNORM"]]))
+            key_store[["PRSGESLACHTSNAAMNORM"]] <- trimws(paste(vv, key_store[["PRSGESLACHTSNAAMNORM"]]))
             
-            print(key_store[["PRSGESLACHTSNAAMNORM"]][1:10])
+
           }
         }
         
