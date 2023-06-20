@@ -497,6 +497,7 @@ pseudoDB <- R6::R6Class(
       
       # 'key_store' wordt alleen voor IZM gebruikt.
       # store_key_columns: alleen aanpassen op basis van 1e entry.
+      # (omdat deze stap anders te vaak wordt herhaald)
       if(!is.null(store_key_columns) && column == store_key_columns[1]){
         
         if(!all(store_key_columns %in% names(data))){
@@ -531,9 +532,16 @@ pseudoDB <- R6::R6Class(
         for(keycol in store_key_columns){
           if(!is.null(normalise_key_columns) && keycol %in% names(normalise_key_columns)){
             
-            nm <- normalise_key_columns[[keycol]]
-            self$log(glue("Storing normalised form of column: {keycol} to column {nm}"))
-            key_store[[nm]] <- stringi::stri_trans_general(key_store[[keycol]], id = "Latin-ASCII")
+            # IZM special :(
+            if(keycol == "PRSGESLACHTSNAAM"){
+              keystore[["PRSGESLACHTSNAAM"]] <- trimws(paste(keystore[["PRSVOORVOEGSELGESLACHTSNAAM"]],
+                                                             KEYSTORE[["PRSGESLACHTSNAAM"]]))
+            }
+            
+            # NAme 
+            name_output <- normalise_key_columns[[keycol]]
+            self$log(glue("Storing normalised form of column: {keycol} to column {name_output}"))
+            key_store[[name_output]] <- stringi::stri_trans_general(key_store[[keycol]], id = "Latin-ASCII")
             
           }
         }
