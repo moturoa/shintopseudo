@@ -530,19 +530,29 @@ pseudoDB <- R6::R6Class(
         
         # Store normalized version of 'name' column for easier searching
         for(keycol in store_key_columns){
-          if(!is.null(normalise_key_columns) && keycol %in% names(normalise_key_columns)){
+          
+          these_cols <- names(normalise_key_columns)
+          if(!is.null(normalise_key_columns) && keycol %in% these_cols){
             
-            # IZM special :(
-            if(keycol == "PRSGESLACHTSNAAM"){
-              keystore[["PRSGESLACHTSNAAM"]] <- trimws(paste(keystore[["PRSVOORVOEGSELGESLACHTSNAAM"]],
-                                                             KEYSTORE[["PRSGESLACHTSNAAM"]]))
-            }
+              # NAme 
+              name_output <- normalise_key_columns[[keycol]]
+              self$log(glue("Storing normalised form of column: {keycol} to column {name_output}"))
+              key_store[[name_output]] <- stringi::stri_trans_general(key_store[[keycol]], id = "Latin-ASCII")
             
-            # NAme 
-            name_output <- normalise_key_columns[[keycol]]
-            self$log(glue("Storing normalised form of column: {keycol} to column {name_output}"))
-            key_store[[name_output]] <- stringi::stri_trans_general(key_store[[keycol]], id = "Latin-ASCII")
+          }
+          
+          # IZM special :(
+          if(keycol == "PRSGESLACHTSNAAM"){
             
+            key_store[["PRSGESLACHTSNAAM"]] <- trimws(paste(key_store[["PRSVOORVOEGSELGESLACHTSNAAM"]],
+                                                            key_store[["PRSGESLACHTSNAAM"]]))
+            
+            # we hebben geen normalised form van het voorvoegsel dus hopen dat er 
+            # weinig voorvoegsels zijn zonder speciale tekens ...
+            key_store[["PRSGESLACHTSNAAMNORM"]] <- trimws(paste(key_store[["PRSVOORVOEGSELGESLACHTSNAAM"]],
+                                                                key_store[["PRSGESLACHTSNAAMNORM"]]))
+            
+            print(key_store[["PRSGESLACHTSNAAMNORM"]][1:10])
           }
         }
         

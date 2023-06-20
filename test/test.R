@@ -20,6 +20,8 @@ cfg_path <- "test/config_brp_IZM_short.yml"
 
 devtools::load_all()
 
+
+# Test 1
 .pdb <- pseudoDB$new(cfg_path, secret = "banaan",
                      max_n_lines = 1000)
 
@@ -29,6 +31,16 @@ devtools::load_all()
 .pdb$close_sqlite()
 
 
+pdb <- shintodb::databaseClass$new(sqlite = file.path(yaml::read_yaml(cfg_path)$project$database,
+                                   "shinto_pseudomaker.sqlite"))
+
+pdb$get_query("select * from keystore limit 2")
+pdb$get_query("select * from datadienst limit 2")
+
+pdb$close()
+
+
+# Test 2
 .pdb <- pseudoDB$new(cfg_path, secret = "banaan")
 
 con <- dbConnect(RSQLite::SQLite(), "c:/repos/ede/DATA/izm/q/shinto_pseudomaker.sqlite")
