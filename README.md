@@ -1,4 +1,4 @@
-![](https://badgen.net/badge/shintolabs/utility/purple)
+![](https://badgen.net/badge/shintolabs/production/green)
 # shintopseudo: data pseudonimiseren
 
 
@@ -9,6 +9,10 @@ devtools::install_github("moturoa/shintopseudo")
 ```
 
 
+## Test
+
+Open `test/config_brp_test.yml` for a test configuration file with comments.
+Go to `test/test_package.R` and run the script.
 
 ## Contact
 

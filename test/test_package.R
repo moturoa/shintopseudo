@@ -26,8 +26,47 @@ library(shintodb)
 
 #----- Inspect outputs -----
 
-pdb <- shintodb::databaseClass$new(sqlite = "test/sqlite/shinto_pseudomaker.sqlite")
-pdb$list_tables()
+db <- shintodb::databaseClass$new(sqlite = "test/sqlite/shinto_pseudomaker.sqlite")
+db$list_tables()
 
-pdb$read_table("datadienst", lazy = TRUE) %>% head() %>% collect
+db$read_table("datadienst", lazy = TRUE) %>% head() %>% collect
+
+db$close()
+
+
+# output files
+out_files <- file.path(.pdb$project$outputdir, .pdb$files)
+
+read.csv2(out_files[1]) %>% head
+read.csv2(out_files[2]) %>% head
+
+
+#----- Test individual steps ----
+
+# Reopen the db connection
+.pdb <- pseudoDB$new("test/config_brp_test.yml", secret = "banaan")
+
+# Symmetric encryption / decryption
+.pdb$decrypt(.pdb$encrypt(c("hallo","daar")))
+
+# Try reading all data
+data <- lapply(.pdb$files, .pdb$read_data)
+
+# Inspect the datalog sofar. Timestamps, paths, MD5 checksums, number of rows, etc.
+.pdb$datalog
+
+# Anonymize columns for the first input file, ignore the config and pass the settings directly
+data1_out <- .pdb$anonymize_columns(data[[1]], 
+                                    columns = "voornaam",
+                                    db_keys = "VOORNAAM")
+
+head(data1_out$voornaam)
+
+# Close the connection again
+.pdb$close()
+
+
+
+
+
 

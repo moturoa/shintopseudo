@@ -12,14 +12,18 @@ config:
   "brp_test_data1.csv":               # Input file path. If the file is inside a folder in `inputdir`, use 'pathto/file.csv'
     encoding: "UTF-8"                 # or Latin-1
     csv-separator: ";"
+    # config block:
+    # - encrypt =  asymmetric encryption via sqlite value/hash ('pseudonimiseren')
+    # - symmetric = symmetric encryption using the provided secret (needs key also, although not sure why)
     config:
       encrypt :                       
         "voornaam" : "VOORNAAM"       # column name : key value
         "achternaam" : "GESLACHTSNAAM"
-        "geslacht" : "GESLACHT"
+      symmetric:
         "email_adres" : "EMAIL"
       remove : 
         - "telnr"                     # remove from output
+        - "email_adres"               # symmetric encrypted columns are still in the output, make sure to remove (or not)
       keep : []                       # explicitly keep columns
       date_to_year : []               # date (dd-mm-yyyy) to year (yyyy)
       to_age_bracket:   
@@ -32,7 +36,10 @@ config:
         "voornamen" : "VOORNAAM"
         "geslachtsnaam" : "GESLACHTSNAAM"
         "geslacht" : "GESLACHT"
-        "email" : "EMAIL"
         "postcode" : "POSTCODE"
+      symmetric:
+        "email" : "EMAIL"
       remove : 
         - "telnr"
+        - "email"
+
