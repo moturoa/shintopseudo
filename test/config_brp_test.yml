@@ -1,0 +1,38 @@
+# Configuration file for test/test_package.R
+# - Folders (output, log, sqlite) inside test/ will be created if they do not exist already
+# - Multiple configurations (in multiple jobs) can use the same sqlite path if you want
+# the same values to be anonymized in the same way. Make sure to set the key of 
+# same data types (e.g. EMAIL) to the same value in different configuration files.
+project:                              
+  inputdir:  "test"                   # relative or absolute path to input files
+  outputdir: "test/output"            # output CSV (same file names!)
+  database:  "test/sqlite"            # location shinto_pseudomaker.sqlite
+  logdir:    "test/log"               # logs
+config:
+  "brp_test_data1.csv":               # Input file path. If the file is inside a folder in `inputdir`, use 'pathto/file.csv'
+    encoding: "UTF-8"                 # or Latin-1
+    csv-separator: ";"
+    config:
+      encrypt :                       
+        "voornaam" : "VOORNAAM"       # column name : key value
+        "achternaam" : "GESLACHTSNAAM"
+        "geslacht" : "GESLACHT"
+        "email_adres" : "EMAIL"
+      remove : 
+        - "telnr"                     # remove from output
+      keep : []                       # explicitly keep columns
+      date_to_year : []               # date (dd-mm-yyyy) to year (yyyy)
+      to_age_bracket:   
+        - "leeftijd"                  # age (int) to bracket (5-10, 10-15)
+  "brp_test_data2.csv":   
+    encoding: "UTF-8"                 # or Latin-1
+    csv-separator: ";"
+    config:
+      encrypt :                      
+        "voornamen" : "VOORNAAM"
+        "geslachtsnaam" : "GESLACHTSNAAM"
+        "geslacht" : "GESLACHT"
+        "email" : "EMAIL"
+        "postcode" : "POSTCODE"
+      remove : 
+        - "telnr"

@@ -697,6 +697,8 @@ pseudoDB <- R6::R6Class(
 
     },
     
+    #' @description Specific for dd-mm-yyyy dates in the data; not configurable
+    #' (and not used in any application)
     date_to_year = function(data, column){
       
       for(i in seq_along(column)){
@@ -712,7 +714,7 @@ pseudoDB <- R6::R6Class(
       data
     },
     
-    
+    #' @description Age in years to bracket (5-10, 10-15 etc.)
     to_age_bracket = function(data, columns){
       
       if(length(columns) == 0)return(data)
@@ -722,7 +724,8 @@ pseudoDB <- R6::R6Class(
       labs <- paste(brks[1:(n-1)], "-", brks[2:n])
       
       for(i in seq_along(columns)){
-        data[[columns[i]]] <- as.character(cut(data[[columns[i]]], 
+        
+        data[[columns[i]]] <- as.character(cut(as.numeric(data[[columns[i]]]), 
                                                breaks = brks,
                                                labels = labs))
       }
