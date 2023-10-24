@@ -12,25 +12,45 @@
 #' @importFrom futile.logger flog.appender appender.tee
 #' @importFrom lubridate year
 #' @importFrom uuid UUIDgenerate
-#' @importFrom shintobag validate_address
 #' @importFrom stringi stri_trans_general
-pseudoDB <- R6::R6Class(
+#' @importFrom R.utils countLines
+#' @importFrom R6 R6Class
+#' @importFrom dplyr filter select all_of any_of tbl as_tibble
+#' @importFrom tidyr replace_na
+#' @importFrom stringr str_trim
+pseudoDB <- R6::R6Class(classname = "pseudoDB",
+                        lock_objects = FALSE,
   public = list(
     
+    #' @field con Database connection
     con = NULL,
-    project = NULL,
-    config = NULL,
-    files = NULL,
-    dbtable = NULL,
-    datalog = NULL,
-    max_n_lines = NULL,
     
+    #' @field project Project block from config
+    project = NULL,
+    
+    #' @field config Config block from config
+    config = NULL,
+    
+    #' @field files File names in the configuration file
+    files = NULL,
+    
+    #' @field datalog Dataframe with file statistics. Filled before and during processing.
+    datalog = NULL,
+    
+    #' @description Make a new object of class 'pseudoDB'. When initializing, reads the configuration
+    #' file, checks and makes the output directories specified in the configuration file, opens a connection
+    #' to the sqlite ('shinto_pseudomaker.sqlite'), checks if all files in the config exist (if not, they are skipped later).
+    #' @param config_file Path to the YML file with settings
+    #' @param secret Secret key used for (extra) symmetric encryption
+    #' @param log_to Log to a file or stdout (pertains to old logging in .log files, see shintopseudo.csv in the file output folder(s)).
+    #' @param max_n_lines Max number of lines to read from the input files; used for testing only
     initialize = function(config_file, secret, 
                           log_to = c("file","stdout"),
                           max_n_lines = NULL){
       
       log_to <- match.arg(log_to)
       
+      # Read configuration file, and take 'project' and 'config' blocks
       cfg <- self$read_config(config_file)
       self$config <- cfg$config
       self$project <- cfg$project
@@ -42,15 +62,19 @@ pseudoDB <- R6::R6Class(
       
       private$secret <- secret
       
+      # create output directories from project config if they don't exist
       self$create_directories()
       
       if(log_to == "file"){
         self$open_logfile()
       }
       
+      # Open connection to SQLite
       self$dbtable <- "datadienst"
       self$con <- self$open_sqlite()
       
+      # Start the datalog; will be filled further during processing.
+      # This gets saved to shintopseudo.csv in the file output directory.
       self$datalog <- tibble::tibble(
         id = uuid::UUIDgenerate(),
         projectname = self$project$projectname,
@@ -66,17 +90,19 @@ pseudoDB <- R6::R6Class(
         n_lines_file = integer(1),
         n_rows_read = integer(1),
         n_cols_read = integer(1),
-        encrypted_columns = self$encrypted_columns()
+        encrypted_columns = private$encrypted_columns()
       )
       
     },
     
+    #' @description Create output/log/sqlite directories if not exist
     create_directories = function(){
       dir.create(self$project$outputdir, showWarnings = FALSE)
       dir.create(self$project$database, showWarnings = FALSE)
       dir.create(self$project$logdir, showWarnings = FALSE)
     },
     
+    #' @description Opens a log file in the log output directory
     open_logfile = function(){
       
       today_ <- format(Sys.Date(), "%Y%m%d")
@@ -88,6 +114,7 @@ pseudoDB <- R6::R6Class(
 
     },
     
+    #' @description Writes shintopseudo.csv in the file output directory
     write_datalog = function(){
       
       path <- file.path(self$project$outputdir, 
@@ -97,7 +124,9 @@ pseudoDB <- R6::R6Class(
       
     },
     
-    
+    #' @description Logs to the old-style logging file
+    #' @param msg Logging message
+    #' @param how Either info, fatal or warn
     log = function(msg, how = c("info","fatal","warn")){
       
       how <- match.arg(how)
@@ -110,22 +139,34 @@ pseudoDB <- R6::R6Class(
       
     },
     
+    #' @description Update a field in the datalog during processing
+    #' @param file For which file to set the datalog
+    #' @param what Set which field (column)
+    #' @param value Set the value
     set_data_log = function(file, what, value){
 
       self$datalog[[what]][self$datalog$file == file] <- value
       
     },
     
+    #' @description Set the status in the datalog (for e.g. errors)
+    #' @param file Filename to set a status
+    #' @param status Status to set
     set_status = function(file, status){
       self$set_data_log(file, "status", status)
     },
     
+    #' @description Set an error in the data log for a file (and a timestamp)
+    #' @param file Filename to flag an error
+    #' @param error Error code
     set_error = function(file, error){
       self$set_status(file, "FAIL")
       self$set_data_log(file, "timestamp", as.character(Sys.time()))
       self$set_data_log(file, "error_code", error)
     },
     
+    #' @description Reads the config from a .yml/.yaml file
+    #' @param fn Path to yml
     read_config = function(fn){
       
       out <- try(yaml::read_yaml(fn), silent = TRUE)
@@ -139,9 +180,11 @@ pseudoDB <- R6::R6Class(
         out$config[[i]]$name <- names(out$config)[i]
       }
       
+      # optional 'clean' setting in project. Not used (?)
       if(is.null(out$project$clean)){
         out$project$clean <- FALSE
       }
+      
       
       if(is.null(out$project$databasename)){
         out$project$databasename <- "shinto_pseudomaker.sqlite"
@@ -150,6 +193,7 @@ pseudoDB <- R6::R6Class(
       return(out)  
     },
     
+    #' @description Check if all files mentioned in the config exist
     check_files_exist = function(){
       
       fns <- file.path(self$project$inputdir, self$files)
@@ -161,6 +205,8 @@ pseudoDB <- R6::R6Class(
       }
     },
     
+    #' @description Opens a connection to the SQLite with `DBI::dbConnect(RSQLite::SQLite()...)`,
+    #' prepares an empty 'datadienst' table in the database if it does not exist already.
     open_sqlite = function(){
       
       path <- self$project$database
@@ -191,6 +237,11 @@ pseudoDB <- R6::R6Class(
       
     },
     
+    #' @description Performs a vacuum on the SQLite. Automatically done before closing the connection.
+    #' @details from sqlite.org: "The VACUUM command rebuilds the database file, repacking it into 
+    #' a minimal amount of disk space [...] Frequent inserts, updates, and deletes can cause the database 
+    #' file to become fragmented - where data for a single table or index is scattered around the database file.
+    #' Running VACUUM ensures that each table and index is largely stored contiguously within the database file.". 
     vacuum_sqlite = function(){
         
       out <- try(DBI::dbExecute(self$con, "vacuum;"))
@@ -202,6 +253,8 @@ pseudoDB <- R6::R6Class(
       
     },
     
+    #' @description Close the DB connection and perform a vacuum
+    #' @param vacuum Whether to vacuum the SQLite or not. See $vacuum_sqlite method.
     close_sqlite = function(vacuum = TRUE){
       if(vacuum){
         self$vacuum_sqlite()
@@ -210,6 +263,7 @@ pseudoDB <- R6::R6Class(
       self$log("Database connection terminated.")
     },
     
+    #' @description Close everything (also the log file)
     close = function(){
       
       self$write_datalog()
@@ -218,8 +272,11 @@ pseudoDB <- R6::R6Class(
       
     },
     
-    
-    #' @param fn Bare filename to read (full path is read from config)
+    #' @description Reads a file from the config. Includes multiple methods.
+    #' @details Normally $read_data_fread is used unless readmethod='json', in which case
+    #' the config setting 'post_read_function' is applied to the result of `jsonlite::fromJSON`, 
+    #' so that you might attempt to flatten a JSON into a neat CSV. 
+    #' @param fn Bare filename to read (full path is read from config). 
     read_data = function(fn){
       
       cfg <- self$config[[fn]]
@@ -342,7 +399,13 @@ pseudoDB <- R6::R6Class(
     },
     
     
-    
+    #' @description Default method to read the CSV using `data.table::fread`.
+    #' @param fn Filename WITH full path (unlike `$read_data`)
+    #' @param quote Argument 'quote' in fread()
+    #' @param sep Argument 'sep' in fread()
+    #' @param fill Argument 'fill' in fread()
+    #' @param skip Argument 'skip' in fread()
+    #' @param encoding Either UTF-8 or Latin-1 (or leave blank for 'unknown', which is not very reliable!)
     read_data_fread = function(fn,
                                quote,
                                sep,
@@ -376,7 +439,9 @@ pseudoDB <- R6::R6Class(
       
     },
     
-    
+    #' @description Writes an output CSV with `data.table::fwrite`
+    #' @param data Dataframe
+    #' @param fn Filename
     write_data = function(data, fn){
       
       path <- file.path(self$project$outputdir, fn)
@@ -412,7 +477,11 @@ pseudoDB <- R6::R6Class(
       )
     },
     
-    
+    #' @description Symmetric encryption for multiple columns at once
+    #' @param data A Dataframe
+    #' @param columns Vector of column names
+    #' @param new_names Vector of new column names in the output dataframe (to be added 
+    #' in addition to the original).
     symmetric_encrypt_columns = function(data, columns, new_names = NULL){
     
       for(i in seq_along(columns)){
@@ -430,6 +499,27 @@ pseudoDB <- R6::R6Class(
     },
     
     
+    #' @description The most basic function: making a 9-character hash used to make all pseudo-IDs.
+    #' @param n Number of hashes to make
+    #' @param n_phrase Length of the hash (default = 9 chars)
+    make_hash = function(n = 1, n_phrase = 9){
+      txt <- c(letters,LETTERS,0:9)
+      replicate(n,paste(sample(txt, n_phrase), collapse=""))
+    },
+    
+    
+    #' @description Anonymize a column. This is the largest and most crucial method. 
+    #' @param data Dataframe
+    #' @param column Column name to hash
+    #' @param db_key Key name of the column 
+    #' @param store_key_columns Special method; do not use.
+    #' @param normalise_key_columns Add a normalized ASCII version of the column to the dataframe (special
+    #' characters replaced with ASCII 'equivalents')
+    #' @param file Unused argument; ignore
+    #' @details Replaces every value in the column of the dataframe with 'hashes', so that each same value in 
+    #' the data will get the same hash. Values already hashed will be read from the sqlite (so that the same hashes/value)
+    #' combinations get made in each file, and each run of the process), values not previously hashed will get a new
+    #' value/hash combination which is written to the sqlite.
     anonymize_column = function(data, column, db_key = NULL,
                                 store_key_columns = NULL,
                                 normalise_key_columns = NULL,
@@ -456,7 +546,7 @@ pseudoDB <- R6::R6Class(
       key <- tibble(
         key = db_key,
         value = u,
-        hash = private$make_hash(length(u))
+        hash = self$make_hash(length(u))
       )
       
       # encrypt
@@ -528,6 +618,7 @@ pseudoDB <- R6::R6Class(
         key_store <- dplyr::distinct(key_store, hash, .keep_all = TRUE)
         
         
+        # IZM special
         # Store normalized version of 'name' column for easier searching
         for(keycol in store_key_columns){
           
@@ -541,7 +632,8 @@ pseudoDB <- R6::R6Class(
             
           }
           
-          # IZM special :(
+          # Het voorvoegsel van de achternaam staat apart, die moeten we eerst plakken voordat 
+          # we de genormaliseerde versie gaan opslaan.
           if(keycol == "PRSGESLACHTSNAAM"){
             
             vv <- key_store[["PRSVOORVOEGSELGESLACHTSNAAM"]]
@@ -558,14 +650,14 @@ pseudoDB <- R6::R6Class(
         }
         
         # Write keys
-        dbWriteTable(self$con, "keystore", key_store, overwrite = TRUE)
+        DBI::dbWriteTable(self$con, "keystore", key_store, overwrite = TRUE)
         
         self$log(glue("Key columns stored ({nrow(key_store)} rows)"))
       }
       
       # Append value/hash to DB (only those rows not previously stored).
       if(nrow(key_db_new) > 0){
-        dbWriteTable(self$con, self$dbtable, key_db_new, append = TRUE)
+        DBI::dbWriteTable(self$con, self$dbtable, key_db_new, append = TRUE)
         #pm_log("{nrow(key_db_new)} value/hashes written to SQLite.")
       }
       
@@ -590,7 +682,12 @@ pseudoDB <- R6::R6Class(
       
     },
     
-    
+    #' @description See $anonymize_column; this is the vectorized version for multiple columns
+    #' @param data See $anonymize_column
+    #' @param columns See $anonymize_column
+    #' @param db_keys See $anonymize_column
+    #' @param file See $anonymize_column
+    #' @param ... Further passed to $anonymize_column
     anonymize_columns = function(data, columns, db_keys, file, ...){
       
       for(i in seq_along(columns)){
@@ -600,11 +697,17 @@ pseudoDB <- R6::R6Class(
       return(data)
     },
 
-    
+    #' @description Only used for a very specific case. Not further encouraged.
+    #' @param path Filename
     read_bag_extract = function(path){
       data.table::fread(path, colClasses = "character")
     },
     
+    #' @description Only used in a very specific case. Not supported or encouraged.
+    #' @param data Dataframe
+    #' @param column Column name
+    #' @param columns_out Names of output columns
+    #' @param bag_path Path to BAG file
     validate_address = function(data, column, columns_out, bag_path){
       
       if(is.null(column))return(data)
@@ -632,7 +735,8 @@ pseudoDB <- R6::R6Class(
       
     },
     
-    
+    #' @description Run the entire process. Read files, anonymize, encrypt, write, log.
+    #' @param files Optional vector of filenames to process, otherwise processes all in the loaded config.
     process_files = function(files = NULL){
 
       if(is.null(files))files <- self$files
@@ -670,23 +774,37 @@ pseudoDB <- R6::R6Class(
           next
         }
         
+        # Run all steps one by one
         out <- out %>%
+          # validate address before anything else (specific case, rarely used)
           self$validate_address(column = cfg$validate_address$column, 
                                 columns_out = cfg$validate_address$columns_out, 
                                 bag_path = cfg$validate_address$bag_path) %>%
+          # anonymize columns (encrypt config block)
           self$anonymize_columns(columns = names(cfg$encrypt),
                             db_keys = unlist(cfg$encrypt),
                             store_key_columns = self$config[[fn]]$config$store_key_columns,
                             normalise_key_columns = self$config[[fn]]$config$normalise_key_columns,
                             file = fn) %>%
+          # symmetric encryption with libsodium (symmetric block in config)
           self$symmetric_encrypt_columns(columns = names(cfg$symmetric),
                                          new_names = unlist(cfg$symmetric)) %>%
+          # remove columns
           self$delete_columns(cfg$remove) %>%
+          
+          # only keep these columns in the output
           self$keep_columns(cfg$keep) %>%
+          
+          # convert date to year (unused)
           self$date_to_year(cfg$date_to_year) %>%
+          
+          # age to 10-15, 15-20, etc.
           self$to_age_bracket(cfg$to_age_bracket)
 
+        # Write output file
         self$write_data(out, fn)
+        
+        # write more datalog outputs
         chk <- private$checksum(file.path(self$project$outputdir, fn))
         self$set_data_log(fn, "md5_out", chk)
         self$set_data_log(fn, "timestamp", as.character(Sys.time()))
@@ -699,6 +817,8 @@ pseudoDB <- R6::R6Class(
     
     #' @description Specific for dd-mm-yyyy dates in the data; not configurable
     #' (and not used in any application)
+    #' @param data Dataframe
+    #' @param column Name of column
     date_to_year = function(data, column){
       
       for(i in seq_along(column)){
@@ -715,6 +835,8 @@ pseudoDB <- R6::R6Class(
     },
     
     #' @description Age in years to bracket (5-10, 10-15 etc.)
+    #' @param data Dataframe
+    #' @param columns Name of columns
     to_age_bracket = function(data, columns){
       
       if(length(columns) == 0)return(data)
@@ -733,45 +855,33 @@ pseudoDB <- R6::R6Class(
       data
     },
     
+    #' @description Keep these columns
+    #' @param data Dataframe
+    #' @param columns Name of columns
     keep_columns = function(data, columns){
       if(length(columns) == 0)return(data)
-      columns <- self$existing_columns(columns, data)
-      dplyr::select(data, dplyr::all_of(columns))
+      columns <- private$existing_columns(columns, data)
+      dplyr::select(data, dplyr::any_of(columns))
     },
     
-    
+    #' @description Delete these columns
+    #' @param data Dataframe
+    #' @param columns Name of columns
     delete_columns = function(data, columns){
       if(length(columns) == 0)return(data)
-      columns <- self$existing_columns(columns, data)
-      dplyr::select(data, -dplyr::all_of(columns))
-    },
-    
-    
-    existing_columns = function(x, data){
-      
-      nm <- names(data)
-      if(all(x %in% nm)){
-        return(x)
-      } else {
-        #pm_log("Columns not in data: {setdiff(x,nm)}")
-        return(intersect(x, nm))
-      }
-      
-    },
-    
-    encrypted_columns = function(){
-        unname(sapply(lapply(lapply(self$config, "[[", "config"), "[[", "encrypt"), jsonlite::toJSON))  
+      columns <- private$existing_columns(columns, data)
+      dplyr::select(data, -dplyr::any_of(columns))
     }
+    
+
     
   ),
   
+  # Private functions not documented. Helpers/utilities.
   private = list(
-    
-    secret = NULL,
-    
-    make_hash = function(n = 1, n_phrase = 9){
-      txt <- c(letters,LETTERS,0:n_phrase)
-      replicate(n,paste(sample(txt, n_phrase), collapse=""))
+
+    encrypted_columns = function(){
+      unname(sapply(lapply(lapply(self$config, "[[", "config"), "[[", "encrypt"), jsonlite::toJSON))  
     },
     
     fix_names = function(x){
@@ -782,6 +892,7 @@ pseudoDB <- R6::R6Class(
       setNames(x, new_nms)
     },
     
+    # fast utility to get nr of lines in a file
     count_lines = function(fn){
       R.utils::countLines(fn)
     },
@@ -794,6 +905,18 @@ pseudoDB <- R6::R6Class(
       
       list(n_lines = private$count_lines(fn),
            n_rows = nrow(data))
+      
+    },
+    
+    existing_columns = function(x, data){
+      
+      nm <- names(data)
+      if(all(x %in% nm)){
+        return(x)
+      } else {
+        #pm_log("Columns not in data: {setdiff(x,nm)}")
+        return(intersect(x, nm))
+      }
       
     }
     

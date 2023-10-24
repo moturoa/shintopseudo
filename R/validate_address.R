@@ -1,5 +1,11 @@
 
 
+#- functions copied from shintobag (to avoid a dependency on that package)
+# used for address validation; used only in one specific case and not recommended for own use.
+
+#' @importFrom dplyr distinct left_join mutate sym tibble
+#' @importFrom stringi stri_replace_last_fixed
+#' @importFrom tidyr replace_na
 validate_address <- function(data, adres_column, bag, 
                              bag_columns = c("adresseerbaarobject_id",
                                              "openbareruimtenaam",
@@ -21,7 +27,7 @@ validate_address <- function(data, adres_column, bag,
   names(adres_out)[1] <- adres_column
   
   adres_out <- merge_bag_columns(adres_out, bag, bag_columns) %>%
-    dplyr::distinct(!!sym(adres_column), .keep_all = TRUE)  # soms dubbele match
+    dplyr::distinct(!!dplyr::sym(adres_column), .keep_all = TRUE)  # soms dubbele match
   
   adres_out <- adres_out[,c(adres_column, bag_columns)]
   
@@ -44,8 +50,8 @@ merge_bag_columns <- function(data, bag, bag_columns = "adresseerbaarobject_id")
 
   # nog ca. 100 panden met meer dan 1 rij per bag_adres.
   # deze hebben meerdere pandid per adres (geen idee waarom).
-  bag <- distinct(bag, !!sym(bag_columns[1]), .keep_all = TRUE) %>%
-    mutate(huisnummer = as.character(huisnummer), # was vroeger char
+  bag <- dplyr::distinct(bag, !!dplyr::sym(bag_columns[1]), .keep_all = TRUE) %>%
+    dplyr::mutate(huisnummer = as.character(huisnummer), # was vroeger char
            huisletter = tidyr::replace_na(huisletter, ""),
            huisnummer = tidyr::replace_na(huisnummer, ""),
            huisnummertoevoeging = tidyr::replace_na(huisnummertoevoeging, ""))
@@ -81,8 +87,8 @@ space_huisnummer_huisletter <- function(x){
 adres_huisnummer_etc <- function(x){
   out <- strsplit(x, "[a-z|A-Z]{2,}")  
   
-  vapply(out, function(x)x[length(x)], FUN.VALUE = character(1)) %>% 
-    stringr::str_trim(.)
+  stringr::str_trim(vapply(out, function(x)x[length(x)], FUN.VALUE = character(1)))
+    
 }
 
 
@@ -138,7 +144,7 @@ fix_openbareruimtenaam <- function(x, bag){
   
   out <- fix_openbareruimtenaam_v(u, bag)
   
-  lookup <- tibble(value = u, fixed = out)
+  lookup <- dplyr::tibble(value = u, fixed = out)
   
   m <- match(x, lookup$value)
   fix <- lookup$fixed[m]
@@ -151,7 +157,7 @@ fix_openbareruimtenaam <- function(x, bag){
 fix_openbareruimtenaam_v <- function(x, bag){
   
   out <- x
-  b_s <- unique(bag$openbareruimtenaam)
+  b_s <- unique(bag[["openbareruimtenaam"]])
   
   for(i in seq_along(x)){
     
@@ -204,6 +210,12 @@ fix_openbareruimtenaam_v <- function(x, bag){
 }
 
 
+# split_adres_field("Nuenenseweg 1", bag_eindhoven)
+# split_adres_field("Nuenenseweg 1A", bag_eindhoven)
+# split_adres_field("Nuenenseweg 1 A", bag_eindhoven)
+# split_adres_field("Nuenenseweg 1 67", bag_eindhoven)
+# split_adres_field("Nuenenseweg 1A 67", bag_eindhoven)
+# split_adres_field("Nuenenseweg 1 A 67", bag_eindhoven)
 split_adres_field <- function(x, bag){
   
   hh <- adres_huisnummer_etc(x) %>% 
@@ -215,8 +227,8 @@ split_adres_field <- function(x, bag){
     grepl("[a-z]", x, ignore.case = TRUE)
   }
   
-  out <- cbind(tibble(openbareruimtenaam = adres_openbareruimtenaam(x)),
-               as_tibble(
+  out <- cbind(dplyr::tibble(openbareruimtenaam = adres_openbareruimtenaam(x)),
+               dplyr::as_tibble(
                  do.call(rbind, lapply(h, function(l){
                    c(huisnummer = l[1],
                      huisletter = if(is_txt(l[2]))l[2] else NA_character_,
@@ -240,22 +252,16 @@ split_adres_field <- function(x, bag){
   
   out[is.na(out)] <- ""
   
-  out$openbareruimtenaam <- fix_openbareruimtenaam(out$openbareruimtenaam, bag)
+  out[["openbareruimtenaam"]] <- fix_openbareruimtenaam(out$openbareruimtenaam, bag)
   
-  out$huisnummertoevoeging[out$huisnummertoevoeging == "-"] <- ""
-  out$huisnummertoevoeging[nchar(out$huisnummertoevoeging) > 6] <- ""
+  out[["huisnummertoevoeging"]][out[["huisnummertoevoeging"]] == "-"] <- ""
+  out[["huisnummertoevoeging"]][nchar(out[["huisnummertoevoeging"]]) > 6] <- ""
   
   out
 }
 
 
 
-# split_adres_field("Nuenenseweg 1", bag_eindhoven)
-# split_adres_field("Nuenenseweg 1A", bag_eindhoven)
-# split_adres_field("Nuenenseweg 1 A", bag_eindhoven)
-# split_adres_field("Nuenenseweg 1 67", bag_eindhoven)
-# split_adres_field("Nuenenseweg 1A 67", bag_eindhoven)
-# split_adres_field("Nuenenseweg 1 A 67", bag_eindhoven)
 
 
 

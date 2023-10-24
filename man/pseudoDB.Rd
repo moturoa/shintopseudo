@@ -8,170 +8,282 @@ Pseudo-database class
 
 Pseudo-database class
 }
+\section{Public fields}{
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{con}}{Database connection}
+
+\item{\code{project}}{Project block from config}
+
+\item{\code{config}}{Config block from config}
+
+\item{\code{files}}{File names in the configuration file}
+
+\item{\code{datalog}}{Dataframe with file statistics. Filled before and during processing.}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{pseudoDB$new()}}
-\item \href{#method-create_directories}{\code{pseudoDB$create_directories()}}
-\item \href{#method-open_logfile}{\code{pseudoDB$open_logfile()}}
-\item \href{#method-write_datalog}{\code{pseudoDB$write_datalog()}}
-\item \href{#method-log}{\code{pseudoDB$log()}}
-\item \href{#method-set_data_log}{\code{pseudoDB$set_data_log()}}
-\item \href{#method-set_status}{\code{pseudoDB$set_status()}}
-\item \href{#method-set_error}{\code{pseudoDB$set_error()}}
-\item \href{#method-read_config}{\code{pseudoDB$read_config()}}
-\item \href{#method-check_files_exist}{\code{pseudoDB$check_files_exist()}}
-\item \href{#method-open_sqlite}{\code{pseudoDB$open_sqlite()}}
-\item \href{#method-vacuum_sqlite}{\code{pseudoDB$vacuum_sqlite()}}
-\item \href{#method-close_sqlite}{\code{pseudoDB$close_sqlite()}}
-\item \href{#method-close}{\code{pseudoDB$close()}}
-\item \href{#method-read_data}{\code{pseudoDB$read_data()}}
-\item \href{#method-read_data_fread}{\code{pseudoDB$read_data_fread()}}
-\item \href{#method-write_data}{\code{pseudoDB$write_data()}}
-\item \href{#method-encrypt}{\code{pseudoDB$encrypt()}}
-\item \href{#method-decrypt}{\code{pseudoDB$decrypt()}}
-\item \href{#method-anonymize_column}{\code{pseudoDB$anonymize_column()}}
-\item \href{#method-anonymize_columns}{\code{pseudoDB$anonymize_columns()}}
-\item \href{#method-process_files}{\code{pseudoDB$process_files()}}
-\item \href{#method-date_to_year}{\code{pseudoDB$date_to_year()}}
-\item \href{#method-to_age_bracket}{\code{pseudoDB$to_age_bracket()}}
-\item \href{#method-keep_columns}{\code{pseudoDB$keep_columns()}}
-\item \href{#method-delete_columns}{\code{pseudoDB$delete_columns()}}
-\item \href{#method-existing_columns}{\code{pseudoDB$existing_columns()}}
-\item \href{#method-encrypted_columns}{\code{pseudoDB$encrypted_columns()}}
-\item \href{#method-clone}{\code{pseudoDB$clone()}}
+\item \href{#method-pseudoDB-new}{\code{pseudoDB$new()}}
+\item \href{#method-pseudoDB-create_directories}{\code{pseudoDB$create_directories()}}
+\item \href{#method-pseudoDB-open_logfile}{\code{pseudoDB$open_logfile()}}
+\item \href{#method-pseudoDB-write_datalog}{\code{pseudoDB$write_datalog()}}
+\item \href{#method-pseudoDB-log}{\code{pseudoDB$log()}}
+\item \href{#method-pseudoDB-set_data_log}{\code{pseudoDB$set_data_log()}}
+\item \href{#method-pseudoDB-set_status}{\code{pseudoDB$set_status()}}
+\item \href{#method-pseudoDB-set_error}{\code{pseudoDB$set_error()}}
+\item \href{#method-pseudoDB-read_config}{\code{pseudoDB$read_config()}}
+\item \href{#method-pseudoDB-check_files_exist}{\code{pseudoDB$check_files_exist()}}
+\item \href{#method-pseudoDB-open_sqlite}{\code{pseudoDB$open_sqlite()}}
+\item \href{#method-pseudoDB-vacuum_sqlite}{\code{pseudoDB$vacuum_sqlite()}}
+\item \href{#method-pseudoDB-close_sqlite}{\code{pseudoDB$close_sqlite()}}
+\item \href{#method-pseudoDB-close}{\code{pseudoDB$close()}}
+\item \href{#method-pseudoDB-read_data}{\code{pseudoDB$read_data()}}
+\item \href{#method-pseudoDB-read_data_fread}{\code{pseudoDB$read_data_fread()}}
+\item \href{#method-pseudoDB-write_data}{\code{pseudoDB$write_data()}}
+\item \href{#method-pseudoDB-encrypt}{\code{pseudoDB$encrypt()}}
+\item \href{#method-pseudoDB-decrypt}{\code{pseudoDB$decrypt()}}
+\item \href{#method-pseudoDB-symmetric_encrypt_columns}{\code{pseudoDB$symmetric_encrypt_columns()}}
+\item \href{#method-pseudoDB-make_hash}{\code{pseudoDB$make_hash()}}
+\item \href{#method-pseudoDB-anonymize_column}{\code{pseudoDB$anonymize_column()}}
+\item \href{#method-pseudoDB-anonymize_columns}{\code{pseudoDB$anonymize_columns()}}
+\item \href{#method-pseudoDB-read_bag_extract}{\code{pseudoDB$read_bag_extract()}}
+\item \href{#method-pseudoDB-validate_address}{\code{pseudoDB$validate_address()}}
+\item \href{#method-pseudoDB-process_files}{\code{pseudoDB$process_files()}}
+\item \href{#method-pseudoDB-date_to_year}{\code{pseudoDB$date_to_year()}}
+\item \href{#method-pseudoDB-to_age_bracket}{\code{pseudoDB$to_age_bracket()}}
+\item \href{#method-pseudoDB-keep_columns}{\code{pseudoDB$keep_columns()}}
+\item \href{#method-pseudoDB-delete_columns}{\code{pseudoDB$delete_columns()}}
+\item \href{#method-pseudoDB-clone}{\code{pseudoDB$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-pseudoDB-new"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-new}{}}}
 \subsection{Method \code{new()}}{
+Make a new object of class 'pseudoDB'. When initializing, reads the configuration
+file, checks and makes the output directories specified in the configuration file, opens a connection
+to the sqlite ('shinto_pseudomaker.sqlite'), checks if all files in the config exist (if not, they are skipped later).
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$new(config_file, secret, log_to = c("file", "stdout"))}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$new(
+  config_file,
+  secret,
+  log_to = c("file", "stdout"),
+  max_n_lines = NULL
+)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{config_file}}{Path to the YML file with settings}
+
+\item{\code{secret}}{Secret key used for (extra) symmetric encryption}
+
+\item{\code{log_to}}{Log to a file or stdout (pertains to old logging in .log files, see shintopseudo.csv in the file output folder(s)).}
+
+\item{\code{max_n_lines}}{Max number of lines to read from the input files; used for testing only}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-create_directories"></a>}}
-\if{latex}{\out{\hypertarget{method-create_directories}{}}}
+\if{html}{\out{<a id="method-pseudoDB-create_directories"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-create_directories}{}}}
 \subsection{Method \code{create_directories()}}{
+Create output/log/sqlite directories if not exist
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{pseudoDB$create_directories()}\if{html}{\out{</div>}}
 }
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-open_logfile"></a>}}
-\if{latex}{\out{\hypertarget{method-open_logfile}{}}}
+\if{html}{\out{<a id="method-pseudoDB-open_logfile"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-open_logfile}{}}}
 \subsection{Method \code{open_logfile()}}{
+Opens a log file in the log output directory
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{pseudoDB$open_logfile()}\if{html}{\out{</div>}}
 }
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-write_datalog"></a>}}
-\if{latex}{\out{\hypertarget{method-write_datalog}{}}}
+\if{html}{\out{<a id="method-pseudoDB-write_datalog"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-write_datalog}{}}}
 \subsection{Method \code{write_datalog()}}{
+Writes shintopseudo.csv in the file output directory
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{pseudoDB$write_datalog()}\if{html}{\out{</div>}}
 }
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-log"></a>}}
-\if{latex}{\out{\hypertarget{method-log}{}}}
+\if{html}{\out{<a id="method-pseudoDB-log"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-log}{}}}
 \subsection{Method \code{log()}}{
+Logs to the old-style logging file
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{pseudoDB$log(msg, how = c("info", "fatal", "warn"))}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{msg}}{Logging message}
+
+\item{\code{how}}{Either info, fatal or warn}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-set_data_log"></a>}}
-\if{latex}{\out{\hypertarget{method-set_data_log}{}}}
+\if{html}{\out{<a id="method-pseudoDB-set_data_log"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-set_data_log}{}}}
 \subsection{Method \code{set_data_log()}}{
+Update a field in the datalog during processing
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{pseudoDB$set_data_log(file, what, value)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{file}}{For which file to set the datalog}
+
+\item{\code{what}}{Set which field (column)}
+
+\item{\code{value}}{Set the value}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-set_status"></a>}}
-\if{latex}{\out{\hypertarget{method-set_status}{}}}
+\if{html}{\out{<a id="method-pseudoDB-set_status"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-set_status}{}}}
 \subsection{Method \code{set_status()}}{
+Set the status in the datalog (for e.g. errors)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{pseudoDB$set_status(file, status)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{file}}{Filename to set a status}
+
+\item{\code{status}}{Status to set}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-set_error"></a>}}
-\if{latex}{\out{\hypertarget{method-set_error}{}}}
+\if{html}{\out{<a id="method-pseudoDB-set_error"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-set_error}{}}}
 \subsection{Method \code{set_error()}}{
+Set an error in the data log for a file (and a timestamp)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{pseudoDB$set_error(file, error)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{file}}{Filename to flag an error}
+
+\item{\code{error}}{Error code}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-read_config"></a>}}
-\if{latex}{\out{\hypertarget{method-read_config}{}}}
+\if{html}{\out{<a id="method-pseudoDB-read_config"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-read_config}{}}}
 \subsection{Method \code{read_config()}}{
+Reads the config from a .yml/.yaml file
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{pseudoDB$read_config(fn)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{fn}}{Path to yml}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-check_files_exist"></a>}}
-\if{latex}{\out{\hypertarget{method-check_files_exist}{}}}
+\if{html}{\out{<a id="method-pseudoDB-check_files_exist"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-check_files_exist}{}}}
 \subsection{Method \code{check_files_exist()}}{
+Check if all files mentioned in the config exist
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{pseudoDB$check_files_exist()}\if{html}{\out{</div>}}
 }
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-open_sqlite"></a>}}
-\if{latex}{\out{\hypertarget{method-open_sqlite}{}}}
+\if{html}{\out{<a id="method-pseudoDB-open_sqlite"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-open_sqlite}{}}}
 \subsection{Method \code{open_sqlite()}}{
+Opens a connection to the SQLite with `DBI::dbConnect(RSQLite::SQLite()...)`,
+prepares an empty 'datadienst' table in the database if it does not exist already.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{pseudoDB$open_sqlite()}\if{html}{\out{</div>}}
 }
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-vacuum_sqlite"></a>}}
-\if{latex}{\out{\hypertarget{method-vacuum_sqlite}{}}}
+\if{html}{\out{<a id="method-pseudoDB-vacuum_sqlite"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-vacuum_sqlite}{}}}
 \subsection{Method \code{vacuum_sqlite()}}{
+Performs a vacuum on the SQLite. Automatically done before closing the connection.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{pseudoDB$vacuum_sqlite()}\if{html}{\out{</div>}}
 }
 
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-close_sqlite"></a>}}
-\if{latex}{\out{\hypertarget{method-close_sqlite}{}}}
-\subsection{Method \code{close_sqlite()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$close_sqlite(vacuum = TRUE)}\if{html}{\out{</div>}}
+\subsection{Details}{
+from sqlite.org: "The VACUUM command rebuilds the database file, repacking it into 
+a minimal amount of disk space [...] Frequent inserts, updates, and deletes can cause the database 
+file to become fragmented - where data for a single table or index is scattered around the database file.
+Running VACUUM ensures that each table and index is largely stored contiguously within the database file.".
 }
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-close"></a>}}
-\if{latex}{\out{\hypertarget{method-close}{}}}
+\if{html}{\out{<a id="method-pseudoDB-close_sqlite"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-close_sqlite}{}}}
+\subsection{Method \code{close_sqlite()}}{
+Close the DB connection and perform a vacuum
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$close_sqlite(vacuum = TRUE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{vacuum}}{Whether to vacuum the SQLite or not. See $vacuum_sqlite method.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-pseudoDB-close"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-close}{}}}
 \subsection{Method \code{close()}}{
+Close everything (also the log file)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{pseudoDB$close()}\if{html}{\out{</div>}}
 }
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-read_data"></a>}}
-\if{latex}{\out{\hypertarget{method-read_data}{}}}
+\if{html}{\out{<a id="method-pseudoDB-read_data"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-read_data}{}}}
 \subsection{Method \code{read_data()}}{
+Reads a file from the config. Includes multiple methods.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{pseudoDB$read_data(fn)}\if{html}{\out{</div>}}
 }
@@ -179,32 +291,66 @@ Pseudo-database class
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{fn}}{Bare filename to read (full path is read from config)}
+\item{\code{fn}}{Bare filename to read (full path is read from config).}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+Normally $read_data_fread is used unless readmethod='json', in which case
+the config setting 'post_read_function' is applied to the result of `jsonlite::fromJSON`, 
+so that you might attempt to flatten a JSON into a neat CSV.
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-pseudoDB-read_data_fread"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-read_data_fread}{}}}
+\subsection{Method \code{read_data_fread()}}{
+Default method to read the CSV using `data.table::fread`.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$read_data_fread(fn, quote, sep, fill, skip = 0, encoding = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{fn}}{Filename WITH full path (unlike `$read_data`)}
+
+\item{\code{quote}}{Argument 'quote' in fread()}
+
+\item{\code{sep}}{Argument 'sep' in fread()}
+
+\item{\code{fill}}{Argument 'fill' in fread()}
+
+\item{\code{skip}}{Argument 'skip' in fread()}
+
+\item{\code{encoding}}{Either UTF-8 or Latin-1 (or leave blank for 'unknown', which is not very reliable!)}
 }
 \if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-read_data_fread"></a>}}
-\if{latex}{\out{\hypertarget{method-read_data_fread}{}}}
-\subsection{Method \code{read_data_fread()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$read_data_fread(fn, quote, sep, fill, skip = 0, encoding = NULL)}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-write_data"></a>}}
-\if{latex}{\out{\hypertarget{method-write_data}{}}}
+\if{html}{\out{<a id="method-pseudoDB-write_data"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-write_data}{}}}
 \subsection{Method \code{write_data()}}{
+Writes an output CSV with `data.table::fwrite`
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{pseudoDB$write_data(data, fn)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{data}}{Dataframe}
+
+\item{\code{fn}}{Filename}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-encrypt"></a>}}
-\if{latex}{\out{\hypertarget{method-encrypt}{}}}
+\if{html}{\out{<a id="method-pseudoDB-encrypt"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-encrypt}{}}}
 \subsection{Method \code{encrypt()}}{
 Symmetrically encrypt a vector using the secret
 \subsection{Usage}{
@@ -220,8 +366,8 @@ Symmetrically encrypt a vector using the secret
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-decrypt"></a>}}
-\if{latex}{\out{\hypertarget{method-decrypt}{}}}
+\if{html}{\out{<a id="method-pseudoDB-decrypt"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-decrypt}{}}}
 \subsection{Method \code{decrypt()}}{
 Symmetrically decrypt an encrypted vector using the secret
 \subsection{Usage}{
@@ -237,95 +383,250 @@ Symmetrically decrypt an encrypted vector using the secret
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-anonymize_column"></a>}}
-\if{latex}{\out{\hypertarget{method-anonymize_column}{}}}
+\if{html}{\out{<a id="method-pseudoDB-symmetric_encrypt_columns"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-symmetric_encrypt_columns}{}}}
+\subsection{Method \code{symmetric_encrypt_columns()}}{
+Symmetric encryption for multiple columns at once
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$symmetric_encrypt_columns(data, columns, new_names = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{data}}{A Dataframe}
+
+\item{\code{columns}}{Vector of column names}
+
+\item{\code{new_names}}{Vector of new column names in the output dataframe (to be added 
+in addition to the original).}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-pseudoDB-make_hash"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-make_hash}{}}}
+\subsection{Method \code{make_hash()}}{
+The most basic function: making a 9-character hash used to make all pseudo-IDs.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$make_hash(n = 1, n_phrase = 9)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{n}}{Number of hashes to make}
+
+\item{\code{n_phrase}}{Length of the hash (default = 9 chars)}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-pseudoDB-anonymize_column"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-anonymize_column}{}}}
 \subsection{Method \code{anonymize_column()}}{
+Anonymize a column. This is the largest and most crucial method.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{pseudoDB$anonymize_column(
   data,
   column,
   db_key = NULL,
   store_key_columns = NULL,
+  normalise_key_columns = NULL,
   file = NULL
 )}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{data}}{Dataframe}
+
+\item{\code{column}}{Column name to hash}
+
+\item{\code{db_key}}{Key name of the column}
+
+\item{\code{store_key_columns}}{Special method; do not use.}
+
+\item{\code{normalise_key_columns}}{Add a normalized ASCII version of the column to the dataframe (special
+characters replaced with ASCII 'equivalents')}
+
+\item{\code{file}}{Unused argument; ignore}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+Replaces every value in the column of the dataframe with 'hashes', so that each same value in 
+the data will get the same hash. Values already hashed will be read from the sqlite (so that the same hashes/value)
+combinations get made in each file, and each run of the process), values not previously hashed will get a new
+value/hash combination which is written to the sqlite.
+}
+
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-anonymize_columns"></a>}}
-\if{latex}{\out{\hypertarget{method-anonymize_columns}{}}}
+\if{html}{\out{<a id="method-pseudoDB-anonymize_columns"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-anonymize_columns}{}}}
 \subsection{Method \code{anonymize_columns()}}{
+See $anonymize_column; this is the vectorized version for multiple columns
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{pseudoDB$anonymize_columns(data, columns, db_keys, file, ...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{data}}{See $anonymize_column}
+
+\item{\code{columns}}{See $anonymize_column}
+
+\item{\code{db_keys}}{See $anonymize_column}
+
+\item{\code{file}}{See $anonymize_column}
+
+\item{\code{...}}{Further passed to $anonymize_column}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-process_files"></a>}}
-\if{latex}{\out{\hypertarget{method-process_files}{}}}
+\if{html}{\out{<a id="method-pseudoDB-read_bag_extract"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-read_bag_extract}{}}}
+\subsection{Method \code{read_bag_extract()}}{
+Only used for a very specific case. Not further encouraged.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$read_bag_extract(path)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{path}}{Filename}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-pseudoDB-validate_address"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-validate_address}{}}}
+\subsection{Method \code{validate_address()}}{
+Only used in a very specific case. Not supported or encouraged.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$validate_address(data, column, columns_out, bag_path)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{data}}{Dataframe}
+
+\item{\code{column}}{Column name}
+
+\item{\code{columns_out}}{Names of output columns}
+
+\item{\code{bag_path}}{Path to BAG file}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-pseudoDB-process_files"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-process_files}{}}}
 \subsection{Method \code{process_files()}}{
+Run the entire process. Read files, anonymize, encrypt, write, log.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{pseudoDB$process_files(files = NULL)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{files}}{Optional vector of filenames to process, otherwise processes all in the loaded config.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-date_to_year"></a>}}
-\if{latex}{\out{\hypertarget{method-date_to_year}{}}}
+\if{html}{\out{<a id="method-pseudoDB-date_to_year"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-date_to_year}{}}}
 \subsection{Method \code{date_to_year()}}{
+Specific for dd-mm-yyyy dates in the data; not configurable
+(and not used in any application)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{pseudoDB$date_to_year(data, column)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{data}}{Dataframe}
+
+\item{\code{column}}{Name of column}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-to_age_bracket"></a>}}
-\if{latex}{\out{\hypertarget{method-to_age_bracket}{}}}
+\if{html}{\out{<a id="method-pseudoDB-to_age_bracket"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-to_age_bracket}{}}}
 \subsection{Method \code{to_age_bracket()}}{
+Age in years to bracket (5-10, 10-15 etc.)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{pseudoDB$to_age_bracket(data, columns)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{data}}{Dataframe}
+
+\item{\code{columns}}{Name of columns}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-keep_columns"></a>}}
-\if{latex}{\out{\hypertarget{method-keep_columns}{}}}
+\if{html}{\out{<a id="method-pseudoDB-keep_columns"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-keep_columns}{}}}
 \subsection{Method \code{keep_columns()}}{
+Keep these columns
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{pseudoDB$keep_columns(data, columns)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{data}}{Dataframe}
+
+\item{\code{columns}}{Name of columns}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-delete_columns"></a>}}
-\if{latex}{\out{\hypertarget{method-delete_columns}{}}}
+\if{html}{\out{<a id="method-pseudoDB-delete_columns"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-delete_columns}{}}}
 \subsection{Method \code{delete_columns()}}{
+Delete these columns
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{pseudoDB$delete_columns(data, columns)}\if{html}{\out{</div>}}
 }
 
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-existing_columns"></a>}}
-\if{latex}{\out{\hypertarget{method-existing_columns}{}}}
-\subsection{Method \code{existing_columns()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$existing_columns(x, data)}\if{html}{\out{</div>}}
-}
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{data}}{Dataframe}
 
+\item{\code{columns}}{Name of columns}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-encrypted_columns"></a>}}
-\if{latex}{\out{\hypertarget{method-encrypted_columns}{}}}
-\subsection{Method \code{encrypted_columns()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{pseudoDB$encrypted_columns()}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-pseudoDB-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-pseudoDB-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

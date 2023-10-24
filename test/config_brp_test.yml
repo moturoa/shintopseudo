@@ -8,6 +8,7 @@ project:
   outputdir: "test/output"            # output CSV (same file names!)
   database:  "test/sqlite"            # location shinto_pseudomaker.sqlite
   logdir:    "test/log"               # logs
+  #databasename: "shinto_pseudomaker.sqlite"  # Optional : name of the SQLite database.
 config:
   "brp_test_data1.csv":               # Input file path. If the file is inside a folder in `inputdir`, use 'pathto/file.csv'
     encoding: "UTF-8"                 # or Latin-1
