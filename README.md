@@ -15,6 +15,7 @@ This package is normally used inside a docker container, which reads data on a t
 data without sensitive information used in our data applications. See repos `pseudomaker` for the standard dockerized implementation, and `deployments-ede`, `hk-azure-deployment`, `ede_izm_configuratie`, `ede_datadienst_configuratie` for
 configuration examples.
 
+See Confluence [pseudonimiseren met shintopseudo](https://shintolabs.atlassian.net/wiki/spaces/PRODDEV/pages/2316795905/Pseudonimiseren+met+shintopseudo)
 
 ## Installation
 
